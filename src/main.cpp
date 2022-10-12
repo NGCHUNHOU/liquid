@@ -17,24 +17,17 @@ int main(int argc, char** argv) {
 		{"all", optional_argument,  (int*)&flags[0], 2} 
 	};
 
-	bool is_filearg = 0;
-	bool onlyFlag = 1;
-
+	char opt = argParser::getopt_long(argc, argv, flags, opts);
 	while (true) {
-		char opt = getopt_long(argc, argv, flags, opts);
-
-		// if no dashed arg found, set is_filearg to true
-		if (opt == -1) {
-			is_filearg = 1;
-			break;
-		};
-		// if unknown option or unknown option without file arg, echo unknown option
-		if (opt == '?') {
+		if (argParser::getArgType(opt) == 2) {
 			cout << "unknown option" << endl;
 			break;
-		} else {
-			onlyFlag = 0;
 		};
+
+		if (argParser::getArgType(opt) == 1) {
+			cout << "reading file" << endl;
+			break;
+		}
 
 		switch (opt) {
 			case 'h':
@@ -45,10 +38,10 @@ int main(int argc, char** argv) {
 				cout << "show all page" << endl;
 				break;
 		};
-	};
 
-	if (is_filearg && onlyFlag)
-		cout << "reading file" << endl;
+		if (argParser::getArgType(opt) == 3) 
+			break;
+	};
 
 	return 0;
 };

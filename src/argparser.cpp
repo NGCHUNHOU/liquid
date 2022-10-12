@@ -4,7 +4,25 @@
 char* optarg = NULL;
 int optind = 1;
 
-int getopt_long(int argc, char* const argv[], const char* short_opt, option* long_opt)
+int argParser::getArgType(int num) {
+	// 001 filearg, 010 unknown flag, 011 onlyFlag
+	int bits = 0;
+	if (num == -1) {
+		bits |= 1;
+		return bits;
+	};
+	if (num == '?') {
+		bits |= 1 << 1;
+		return bits;
+	} else {
+		bits |= 1 << 1;
+		bits += 1;
+		return bits;
+	};
+	return bits;
+};
+
+int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, option* long_opt)
 {
 	if ((optind >= argc) || (argv[optind][0] == 0) || (argv[optind][0] != '-') && (argv[optind][1] != '-') )
 		return -1;

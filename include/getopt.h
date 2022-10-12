@@ -19,7 +19,11 @@ struct option {
 	int val;
 };
 
-int getopt_long(int argc, char* const argv[], const char *short_opt, option *long_opt);
+class argParser {
+public:
+	static int getArgType(int num);
+	static int getopt_long(int argc, char* const argv[], const char *short_opt, option *long_opt);
+};
 
 #ifdef __cplusplus
 }
