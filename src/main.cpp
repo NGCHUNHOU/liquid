@@ -5,9 +5,9 @@
 #include <getopt.h>
 using namespace std;
 
-sf::View getLetterboxView(sf::View view, int windowWidth, int windowHeight) {
+void setLetterboxView(sf::View *view, int windowWidth, int windowHeight) {
     float windowRatio = windowWidth / (float) windowHeight;
-    float viewRatio = view.getSize().x / (float) view.getSize().y;
+    float viewRatio = view->getSize().x / (float) view->getSize().y;
     float sizeX = 1;
     float sizeY = 1;
     float posX = 0;
@@ -27,28 +27,18 @@ sf::View getLetterboxView(sf::View view, int windowWidth, int windowHeight) {
         posY = (1 - sizeY) / 2.f;
     }
 
-    view.setViewport( sf::FloatRect(posX, posY, sizeX, sizeY) );
-
-    return view;
+    view->setViewport( sf::FloatRect(posX, posY, sizeX, sizeY) );
+    return;
 }
 
-struct res { static int width; static int height; };
-int res::width = 800;
-int res::height = 600;
+struct imageResolution { int width; int height; };
 
-void openImg(string imgPath) {
+void displayImg(int width, int height, sf::Sprite *imgSource) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	sf::RenderWindow window(sf::VideoMode(res::width, res::height, desktop.bitsPerPixel), "Liquid");
-	sf::Texture texture;
-	texture.loadFromFile(imgPath);
-	sf::Sprite imgSource;
-	imgSource.setTexture(texture);
-	if (window.getSize().x < imgSource.getLocalBounds().width)
-		imgSource.setScale(res::width/imgSource.getLocalBounds().width, res::height/imgSource.getLocalBounds().height);
+	sf::RenderWindow window(sf::VideoMode(width, height, desktop.bitsPerPixel), "Liquid");
 	sf::View view;
-    	view.setSize(res::width, res::height);
+	view.setSize(imgSource->getTexture()->getSize().x, imgSource->getTexture()->getSize().y);
 	view.setCenter( view.getSize().x / 2, view.getSize().y / 2 );
-	view = getLetterboxView( view, res::width, res::height);  
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -58,14 +48,24 @@ void openImg(string imgPath) {
 				break;
 			}
 			if (event.type == sf::Event::Resized) {
-				view = getLetterboxView(view, event.size.width, event.size.height);
+				setLetterboxView(&view, event.size.width, event.size.height);
 			};
 		};
 		window.clear();
 		window.setView(view);
-		window.draw(imgSource);
+		window.draw(*imgSource);
 		window.display();
 	};
+};
+
+void openImg(string imgPath) {
+	imageResolution imgSize = { 800, 600 };
+	sf::Texture texture;
+	texture.loadFromFile(imgPath);
+	sf::Sprite imgSource;
+	imgSource.setTexture(texture);
+	displayImg(imgSize.width, imgSize.height, &imgSource);
+	return;
 };
 
 int main(int argc, char** argv) {
