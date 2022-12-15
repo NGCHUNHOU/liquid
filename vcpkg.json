@@ -2,6 +2,7 @@
 	"name": "liquid",
 	"version": "0.1.0",
 	"dependencies": [
-		"sfml"
+		"sfml",
+		"fmt"
 	]
 }
