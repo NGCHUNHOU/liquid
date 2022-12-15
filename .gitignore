@@ -307,6 +307,7 @@ install_manual.md
 !/triplets/community/**
 
 *.exe
+!scripts/tls12-download.exe
 *.zip
 
 ############################################################
