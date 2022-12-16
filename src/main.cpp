@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 	argCounter ac;
 
 	char opt = NULL;
-	while ((opt = argParser::getopt_long(argc, argv, flags, opts, &ac)) != -1 && (ac.fileCount + ac.flagCount) < argc) {
+	while ((opt = argParser::getopt_long(argc, argv, flags, &ac)) != -1 && (ac.fileCount + ac.flagCount) < argc) {
 		switch (opt) {
 		case 'h':
 			cout << "help page" << endl;

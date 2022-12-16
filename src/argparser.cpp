@@ -19,7 +19,7 @@ int argParser::getArgType(int num) {
 	};
 };
 
-int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, option* long_opt, argCounter *aC)
+int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, argCounter *aC)
 {
 	//if ((optind >= argc) || (argv[optind][0] == 0) || (argv[optind][0] != '-') && (argv[optind][1] != '-') )
 	//	return -1;
@@ -27,12 +27,12 @@ int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, 
 		return -1;
 
 	int firstChar = 0;
-	char testc = argv[optind][0];
-	char *testcc = argv[optind];
 
 	if (argv[optind][0] != '-') {
-		//firstChar = argv[optind][1];
 		aC->fileCount += 1;
+	} else if (argv[optind][1] == '-') {
+		firstChar = argv[optind][2];
+		aC->flagCount += 1;
 	}
 	else {
 		firstChar = argv[optind][1];
