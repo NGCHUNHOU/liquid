@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <getopt.h>
+#include <fstream>
 using namespace std;
 
 void setLetterboxView(sf::View *view, int windowWidth, int windowHeight) {
@@ -74,37 +75,48 @@ int main(int argc, char** argv) {
 		return 1;
 	};
 
-	char *flags = "h:a:";
-	option opts[] = { 
+	char* flags = "h:a:";
+	option opts[] = {
 		{"help", optional_argument,  (int*)&flags[0], 1},
-		{"all", optional_argument,  (int*)&flags[0], 2} 
+		{"all", optional_argument,  (int*)&flags[0], 2}
 	};
 
-	char opt = argParser::getopt_long(argc, argv, flags, opts);
-	while (true) {
-		if (argParser::getArgType(opt) == 2) {
-			cout << "unknown option" << endl;
-			break;
-		};
+	argCounter ac;
 
-		if (argParser::getArgType(opt) == 1) {
-			openImg(argv[1]);
-			break;
-		}
-
+	char opt = NULL;
+	while ((opt = argParser::getopt_long(argc, argv, flags, opts, &ac)) != -1 && (ac.fileCount + ac.flagCount) < argc) {
 		switch (opt) {
-			case 'h':
-				cout << "help page" << endl;
-				break;
+		case 'h':
+			cout << "help page" << endl;
+			break;
+		case 'a':
+			cout << "show all page" << endl;
+			break;
+		default:
+			break;
+		};
+	};
+	
+	if (ac.fileCount == argc) {
+		cout << "all arguments type are file" << endl;
 
-			case 'a':
-				cout << "show all page" << endl;
-				break;
+		ifstream file(argv[1]);
+		if (!file.good()) {
+			cout << "failed to open the images" << endl;
+			return 1;
 		};
 
-		if (argParser::getArgType(opt) == 3) 
-			break;
+		openImg(argv[1]);
+		return 0;
 	};
+
+	if (argc == 2) {
+		cout << "show nothing because option is printed" << endl;
+		return 0;
+	};
+
+	cout << "option and file" << endl;
 
 	return 0;
+
 };

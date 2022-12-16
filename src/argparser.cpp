@@ -15,24 +15,32 @@ int argParser::getArgType(int num) {
 		bits |= 1 << 1;
 		return bits;
 	} else {
-		bits |= 1 << 1;
-		bits += 1;
-		return bits;
+		return num;
 	};
-	return bits;
 };
 
-int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, option* long_opt)
+int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, option* long_opt, argCounter *aC)
 {
-	if ((optind >= argc) || (argv[optind][0] == 0) || (argv[optind][0] != '-') && (argv[optind][1] != '-') )
+	//if ((optind >= argc) || (argv[optind][0] == 0) || (argv[optind][0] != '-') && (argv[optind][1] != '-') )
+	//	return -1;
+	if ((optind >= argc) || (argv[optind][0] == 0))
 		return -1;
 
-	int firstChar;
+	int firstChar = 0;
+	char testc = argv[optind][0];
+	char *testcc = argv[optind];
 
-	if (argv[optind][1] != '-')
+	if (argv[optind][0] != '-') {
+		//firstChar = argv[optind][1];
+		aC->fileCount += 1;
+	}
+	else {
 		firstChar = argv[optind][1];
-	else
-		firstChar = argv[optind][2];
+		aC->flagCount += 1;
+	}
+
+	if (aC->fileCount > 0)
+		return firstChar + ((aC->fileCount)+(aC->flagCount));
 
 	const char* p = strchr(short_opt, firstChar);
 
@@ -47,5 +55,8 @@ int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, 
 		optind++;
 	};
 
-	return firstChar;
+	if (((aC->fileCount) + (aC->flagCount)) <= 2) {
+		return firstChar;
+	};
+	return firstChar + ((aC->fileCount)+(aC->flagCount));
 };

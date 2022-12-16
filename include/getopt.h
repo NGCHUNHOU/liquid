@@ -19,10 +19,12 @@ struct option {
 	int val;
 };
 
+struct argCounter { int fileCount = 0; int flagCount = 0; };
+
 class argParser {
 public:
 	static int getArgType(int num);
-	static int getopt_long(int argc, char* const argv[], const char *short_opt, option *long_opt);
+	static int getopt_long(int argc, char* const argv[], const char *short_opt, option *long_opt, argCounter *aC);
 };
 
 #ifdef __cplusplus
