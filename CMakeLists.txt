@@ -17,5 +17,5 @@ foreach (_variableName ${_variableNames})
 	file(APPEND ${PROJECT_SOURCE_DIR}/build/compileVars.log "${_variableName}=${${_variableName}}\n")
 endforeach()
 
-add_executable(liquid src/main.cpp src/argparser.cpp)
+add_executable(liquid src/main.cpp src/argparser.cpp src/imageHandler.cpp)
 target_link_libraries(liquid PRIVATE fmt::fmt sfml-system sfml-network sfml-graphics sfml-window)
