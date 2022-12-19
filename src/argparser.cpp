@@ -21,8 +21,6 @@ int argParser::getArgType(int num) {
 
 int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, argCounter *aC)
 {
-	//if ((optind >= argc) || (argv[optind][0] == 0) || (argv[optind][0] != '-') && (argv[optind][1] != '-') )
-	//	return -1;
 	if ((optind >= argc) || (argv[optind][0] == 0))
 		return -1;
 
@@ -30,6 +28,7 @@ int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, 
 
 	if (argv[optind][0] != '-') {
 		aC->fileCount += 1;
+		return '%';
 	} else if (argv[optind][1] == '-') {
 		firstChar = argv[optind][2];
 		aC->flagCount += 1;
