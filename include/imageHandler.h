@@ -13,6 +13,7 @@ public:
 	struct imageResolution { int width; int height; };
 	static void displayImg(int width, int height, sf::Sprite* imgSource);
 	static void openImg(string imgPath);
+	static void openMultipleImgs(char** imgsPath, short arg_c);
 };
 
 #endif

@@ -19,7 +19,7 @@ int argParser::getArgType(int num) {
 	};
 };
 
-int argParser::getopt_long(int argc, char* const argv[], const char* short_opt, argCounter *aC)
+int argParser::getopt_long(int argc, char* argv[], const char* short_opt, argCounter *aC)
 {
 	if ((optind >= argc) || (argv[optind][0] == 0))
 		return -1;

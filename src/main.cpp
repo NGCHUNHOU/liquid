@@ -1,7 +1,6 @@
 #include <iostream>
 #include <array>
 #include <getopt.h>
-#include <fstream>
 #include <imageHandler.h>
 using namespace std;
 
@@ -15,20 +14,15 @@ void usage() {
 	return;
 }
 
-void try_openimg(int arg_c, char** arg_v, argCounter* argCt) {
+void try_openimg(int arg_c, char **arg_v, argCounter* argCt) {
 	if (arg_c == 2 && argCt->flagCount == 0) {
 		cout << "opening single file" << endl;
-		ifstream file(arg_v[1]);
-		if (!file.good()) {
-			cout << "failed to open the images" << endl;
-			exit(1);
-		}
-
 		imageHandler::openImg(arg_v[1]);
 		exit(0);
 	} else if (arg_c > 2 && argCt->fileCount == (arg_c - 1)) {
 		cout << "all arguments type are file" << endl;
-		// opemMultipleImg() here
+		imageHandler::openMultipleImgs(arg_v, arg_c);
+		exit(0);
 	} else if (arg_c > 2 && argCt->flagCount > 0) {
 		cout << "the arguments have option flag and value" << endl;
 		// opemMultipleImgWithFlag() here
