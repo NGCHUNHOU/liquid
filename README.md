@@ -8,5 +8,11 @@ media editor cli
 
 # the usage
 ```
-liquid.exe [FILES]
+liquid [OPTIONS] [FILES]
+display or edit media
+
+ -h, --help     display help and exit
+ -a, --all      show all info
 ```
+
+to create a clean environment for building from source when the source code is transferred to another computer, run the command `vcpkg env` to create a clean environment for building from source. This will set up the necessary environment variables and configure the system to use the vcpkg libraries and tools
