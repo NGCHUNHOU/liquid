@@ -29,8 +29,10 @@ void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowH
 void imageHandler::displayImg(int width, int height, sf::Sprite* imgSource) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(width, height, desktop.bitsPerPixel), "Liquid");
+	// find the min ratio value between width and height, set scale with min ratio if the ratio value < 1
 	float scaleFactor = min((float)window.getSize().x / imgSource->getTexture()->getSize().x, (float)window.getSize().y / imgSource->getTexture()->getSize().y);
-	imgSource->setScale(scaleFactor, scaleFactor);
+	if (scaleFactor < 1)
+		imgSource->setScale(scaleFactor, scaleFactor);
 	imgSource->setOrigin(imgSource->getTexture()->getSize().x / 2.0f, imgSource->getTexture()->getSize().y / 2.0f);
 	imgSource->setPosition(width / 2.0f, height / 2.0f);
 	sf::View view;
