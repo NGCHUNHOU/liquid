@@ -29,6 +29,10 @@ void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowH
 void imageHandler::displayImg(int width, int height, sf::Sprite* imgSource) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(width, height, desktop.bitsPerPixel), "Liquid");
+	float scaleFactor = min((float)window.getSize().x / imgSource->getTexture()->getSize().x, (float)window.getSize().y / imgSource->getTexture()->getSize().y);
+	imgSource->setScale(scaleFactor, scaleFactor);
+	imgSource->setOrigin(imgSource->getTexture()->getSize().x / 2.0f, imgSource->getTexture()->getSize().y / 2.0f);
+	imgSource->setPosition(width / 2.0f, height / 2.0f);
 	sf::View view;
 	//view.setSize(imgSource->getTexture()->getSize().x, imgSource->getTexture()->getSize().y);
 	view.setSize(width, height);
@@ -62,8 +66,6 @@ void imageHandler::openImg(string imgPath) {
 	sf::Texture texture;
 	texture.loadFromFile(imgPath);
 	sf::Sprite imgSource(texture);
-	imgSource.setOrigin(texture.getSize().x / 2.0f, texture.getSize().y / 2.0f);
-	imgSource.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
 	displayImg(imgSize.width, imgSize.height, &imgSource);
 	return;
 };
