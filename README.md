@@ -19,7 +19,7 @@ display or edit media files
 # Transferring Source Code Offline
 to create a clean environment for building from source when the source code is transferred to another computer, run the command `vcpkg env` to create a clean environment for building from source. This will set up the necessary environment variables and configure the system to use the vcpkg libraries and tools
 
-# to do list
+# To-Do List
 - [x] open single image file
 - [x] open and navigate between multiples image file using the left key (h) and right key (l)
 - [ ] edit image with simple feature
