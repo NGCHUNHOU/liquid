@@ -86,37 +86,25 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(imgSize.width, imgSize.height, desktop.bitsPerPixel), "Liquid");
 
-	sf::Texture texture;
-	sf::Sprite baseImage_copy;
-	for (int i = 1;i < arg_c;i++) {
-		ifstream file(imgPaths[i]);
-		if (!file.good()) {
-			cout << "failed to open the images" << endl;
-			exit(1);
-		}
-
-		texture.loadFromFile(imgPaths[i]);
-		baseImage_copy.setTexture(texture);
-		float scaleFactor = min((float)window.getSize().x / texture.getSize().x, (float)window.getSize().y / texture.getSize().y);
-		baseImage_copy.setScale(scaleFactor, scaleFactor);
-		baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
-		baseImage_copy.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
-		images.push_back(texture);
-		sprites.push_back(baseImage_copy);
-	}
-
+	sf::Texture baseTexture;
 	sf::Sprite baseImage;
-	baseImage.setTexture(images[0]);
-	float scaleFactor = min((float)window.getSize().x / images[0].getSize().x, (float)window.getSize().y / images[0].getSize().y);
+
+	baseTexture.loadFromFile(imgPaths[1]);
+	baseImage.setTexture(baseTexture);
+	float scaleFactor = min((float)window.getSize().x / baseTexture.getSize().x, (float)window.getSize().y / baseTexture.getSize().y);
 	if (scaleFactor < 1)
 		baseImage.setScale(scaleFactor, scaleFactor);
 	baseImage.setOrigin(baseImage.getTexture()->getSize().x / 2.0f, baseImage.getTexture()->getSize().y / 2.0f);
 	baseImage.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
-	int imageIndex = 0;
+	int imageIndex = 1;
 
 	sf::View view;
 	view.setSize(imgSize.width, imgSize.height);
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
+
+
+	sf::Sprite baseImage_copy;
+	sf::Texture baseTexture_copy;
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -131,15 +119,29 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::L) {
 					imageIndex += 1;
-					if (imageIndex >= images.size())
-						imageIndex = 0;
-					updateTextureSize(&baseImage, &images[imageIndex], &sprites[imageIndex]);
+					if (imageIndex >= arg_c)
+						imageIndex = 1;
+					baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
+					baseImage_copy.setTexture(baseTexture_copy);
+
+					float scaleFactor = min((float)window.getSize().x / baseTexture_copy.getSize().x, (float)window.getSize().y / baseTexture_copy.getSize().y);
+					baseImage_copy.setScale(scaleFactor, scaleFactor);
+					baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
+					baseImage_copy.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
+					updateTextureSize(&baseImage, &baseTexture_copy, &baseImage_copy);
 				};
 				if (event.key.code == sf::Keyboard::H) {
 					imageIndex -= 1;
-					if (imageIndex < 0)
-						imageIndex = images.size() - 1;
-					updateTextureSize(&baseImage, &images[imageIndex], &sprites[imageIndex]);
+					if (imageIndex < 1)
+						imageIndex = arg_c - 1;
+					baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
+					baseImage_copy.setTexture(baseTexture_copy);
+
+					float scaleFactor = min((float)window.getSize().x / baseTexture_copy.getSize().x, (float)window.getSize().y / baseTexture_copy.getSize().y);
+					baseImage_copy.setScale(scaleFactor, scaleFactor);
+					baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
+					baseImage_copy.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
+					updateTextureSize(&baseImage, &baseTexture_copy, &baseImage_copy);
 				};
 			};
 		};
