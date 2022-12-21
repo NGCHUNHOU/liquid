@@ -6,7 +6,7 @@ using namespace std;
 
 void usage() {
 	const char *programName = "liquid";
-	const char* programDescription = "display or edit media";
+	const char* programDescription = "display or edit media files";
 	const char* helpFlag = "-h, --help	display help and exit";
 	const char* showallFlag = "-a, --all	show all info";
 	printf("%s [OPTIONS] [FILES]\n%s\n\n %s\n %s", programName, programDescription, helpFlag, showallFlag);
@@ -61,7 +61,5 @@ int main(int argc, char** argv) {
 			break;
 		};
 	};
-
 	return 0;
-
 };
