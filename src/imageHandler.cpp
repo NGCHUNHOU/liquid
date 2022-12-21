@@ -79,7 +79,7 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(imgSize.width, imgSize.height, desktop.bitsPerPixel), "Liquid");
 
-	for (int i = 1;i < 3;i++) {
+	for (int i = 1;i < arg_c;i++) {
 		ifstream file(imgPaths[i]);
 		if (!file.good()) {
 			cout << "failed to open the images" << endl;
@@ -121,19 +121,27 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 			if (event.type == sf::Event::Resized) {
 				setLetterboxView(&view, event.size.width, event.size.height);
 			};
-			if (event.key.code == sf::Keyboard::L) {
-				baseImage.setTexture(images[1]);
-				baseImage.setTextureRect(sf::IntRect(0, 0, images[1].getSize().x, images[1].getSize().y));
-				baseImage.setScale(sprites[1].getScale());
-				baseImage.setOrigin(sprites[1].getOrigin());
-				baseImage.setPosition(sprites[1].getPosition());
-			};
-			if (event.key.code == sf::Keyboard::H) {
-				baseImage.setTexture(images[0]);
-				baseImage.setTextureRect(sf::IntRect(0, 0, images[0].getSize().x, images[0].getSize().y));
-				baseImage.setScale(sprites[0].getScale());
-				baseImage.setOrigin(sprites[0].getOrigin());
-				baseImage.setPosition(sprites[0].getPosition());
+			if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::L) {
+					imageIndex += 1;
+					if (imageIndex >= images.size())
+						imageIndex = 0;
+					baseImage.setTexture(images[imageIndex]);
+					baseImage.setTextureRect(sf::IntRect(0, 0, images[imageIndex].getSize().x, images[imageIndex].getSize().y));
+					baseImage.setScale(sprites[imageIndex].getScale());
+					baseImage.setOrigin(sprites[imageIndex].getOrigin());
+					baseImage.setPosition(sprites[imageIndex].getPosition());
+				};
+				if (event.key.code == sf::Keyboard::H) {
+					imageIndex -= 1;
+					if (imageIndex < 0)
+						imageIndex = images.size() - 1;
+					baseImage.setTexture(images[imageIndex]);
+					baseImage.setTextureRect(sf::IntRect(0, 0, images[imageIndex].getSize().x, images[imageIndex].getSize().y));
+					baseImage.setScale(sprites[imageIndex].getScale());
+					baseImage.setOrigin(sprites[imageIndex].getOrigin());
+					baseImage.setPosition(sprites[imageIndex].getPosition());
+				};
 			};
 		};
 		window.clear();
