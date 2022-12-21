@@ -122,18 +122,18 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 				setLetterboxView(&view, event.size.width, event.size.height);
 			};
 			if (event.key.code == sf::Keyboard::L) {
-				view.setSize((float)window.getSize().x, (float)window.getSize().y);
+				baseImage.setTexture(images[1]);
+				baseImage.setTextureRect(sf::IntRect(0, 0, images[1].getSize().x, images[1].getSize().y));
 				baseImage.setScale(sprites[1].getScale());
 				baseImage.setOrigin(sprites[1].getOrigin());
 				baseImage.setPosition(sprites[1].getPosition());
-				baseImage.setTexture(images[1]);
 			};
 			if (event.key.code == sf::Keyboard::H) {
-				view.setSize((float)window.getSize().x, (float)window.getSize().y);
+				baseImage.setTexture(images[0]);
+				baseImage.setTextureRect(sf::IntRect(0, 0, images[0].getSize().x, images[0].getSize().y));
 				baseImage.setScale(sprites[0].getScale());
 				baseImage.setOrigin(sprites[0].getOrigin());
 				baseImage.setPosition(sprites[0].getPosition());
-				baseImage.setTexture(images[0]);
 			};
 		};
 		window.clear();
