@@ -71,6 +71,13 @@ void imageHandler::openImg(string imgPath) {
 	displayImg(imgSize.width, imgSize.height, &imgSource);
 	return;
 };
+void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, sf::Sprite *updateImg) {
+	baseImg->setTexture(*textre);
+	baseImg->setTextureRect(sf::IntRect(0, 0, textre->getSize().x, textre->getSize().y));
+	baseImg->setScale(updateImg->getScale());
+	baseImg->setOrigin(updateImg->getOrigin());
+	baseImg->setPosition(updateImg->getPosition());
+};
 void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 	cout << "first image path " << imgPaths[1] << "\n" << "second image path " << imgPaths[2] << endl;
 	vector<sf::Texture> images;
@@ -79,6 +86,8 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(imgSize.width, imgSize.height, desktop.bitsPerPixel), "Liquid");
 
+	sf::Texture texture;
+	sf::Sprite baseImage_copy;
 	for (int i = 1;i < arg_c;i++) {
 		ifstream file(imgPaths[i]);
 		if (!file.good()) {
@@ -86,8 +95,6 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 			exit(1);
 		}
 
-		sf::Texture texture;
-		sf::Sprite baseImage_copy;
 		texture.loadFromFile(imgPaths[i]);
 		baseImage_copy.setTexture(texture);
 		float scaleFactor = min((float)window.getSize().x / texture.getSize().x, (float)window.getSize().y / texture.getSize().y);
@@ -126,21 +133,13 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 					imageIndex += 1;
 					if (imageIndex >= images.size())
 						imageIndex = 0;
-					baseImage.setTexture(images[imageIndex]);
-					baseImage.setTextureRect(sf::IntRect(0, 0, images[imageIndex].getSize().x, images[imageIndex].getSize().y));
-					baseImage.setScale(sprites[imageIndex].getScale());
-					baseImage.setOrigin(sprites[imageIndex].getOrigin());
-					baseImage.setPosition(sprites[imageIndex].getPosition());
+					updateTextureSize(&baseImage, &images[imageIndex], &sprites[imageIndex]);
 				};
 				if (event.key.code == sf::Keyboard::H) {
 					imageIndex -= 1;
 					if (imageIndex < 0)
 						imageIndex = images.size() - 1;
-					baseImage.setTexture(images[imageIndex]);
-					baseImage.setTextureRect(sf::IntRect(0, 0, images[imageIndex].getSize().x, images[imageIndex].getSize().y));
-					baseImage.setScale(sprites[imageIndex].getScale());
-					baseImage.setOrigin(sprites[imageIndex].getOrigin());
-					baseImage.setPosition(sprites[imageIndex].getPosition());
+					updateTextureSize(&baseImage, &images[imageIndex], &sprites[imageIndex]);
 				};
 			};
 		};
