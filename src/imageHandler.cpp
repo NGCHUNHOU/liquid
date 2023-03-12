@@ -124,7 +124,7 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 					baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
 					baseImage_copy.setTexture(baseTexture_copy);
 
-					float scaleFactor = min((float)window.getSize().x / baseTexture_copy.getSize().x, (float)window.getSize().y / baseTexture_copy.getSize().y);
+					float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
 					baseImage_copy.setScale(scaleFactor, scaleFactor);
 					baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
 					baseImage_copy.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
@@ -137,7 +137,7 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 					baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
 					baseImage_copy.setTexture(baseTexture_copy);
 
-					float scaleFactor = min((float)window.getSize().x / baseTexture_copy.getSize().x, (float)window.getSize().y / baseTexture_copy.getSize().y);
+					float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
 					baseImage_copy.setScale(scaleFactor, scaleFactor);
 					baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
 					baseImage_copy.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
