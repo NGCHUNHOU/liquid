@@ -17,11 +17,11 @@ void usage() {
 void try_openimg(int arg_c, char **arg_v, argCounter* argCt) {
 	if (arg_c == 2 && argCt->flagCount == 0) {
 		cout << "opening single file" << endl;
-		imageHandler::openImg(arg_v[1]);
+		imageHandler::openImage(arg_v[1]);
 		exit(0);
 	} else if (arg_c > 2 && argCt->fileCount == (arg_c - 1)) {
 		cout << "all arguments type are file" << endl;
-		imageHandler::openMultipleImgs(arg_v, arg_c);
+		imageHandler::openMultipleImages(arg_v, arg_c);
 		exit(0);
 	} else if (arg_c > 2 && argCt->flagCount > 0) {
 		cout << "the arguments have option flag and value" << endl;

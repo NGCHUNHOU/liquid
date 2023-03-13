@@ -26,7 +26,7 @@ void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowH
 		view->setViewport( sf::FloatRect(posX, posY, sizeX, sizeY) );
 		return;
 }
-void imageHandler::displayImg(int width, int height, sf::Sprite* imgSource) {
+void imageHandler::displayImage(int width, int height, sf::Sprite* imgSource) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(width, height, desktop.bitsPerPixel), "Liquid");
 	// find the min ratio value between width and height, set scale with min ratio if the ratio value < 1
@@ -57,18 +57,18 @@ void imageHandler::displayImg(int width, int height, sf::Sprite* imgSource) {
 		window.display();
 	};
 };
-void imageHandler::openImg(string imgPath) {
+void imageHandler::openImage(string imgPath) {
 	ifstream file(imgPath);
 	if (!file.good()) {
 		cout << "failed to open the images" << endl;
 		exit(1);
 	}
 
-	imageResolution imgSize = { 800, 600 };
+	windowSize winSize = { 800, 600 };
 	sf::Texture texture;
 	texture.loadFromFile(imgPath);
 	sf::Sprite imgSource(texture);
-	displayImg(imgSize.width, imgSize.height, &imgSource);
+	displayImage(winSize.width, winSize.height, &imgSource);
 	return;
 };
 void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, sf::Sprite *updateImg) {
@@ -78,13 +78,13 @@ void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, s
 	baseImg->setOrigin(updateImg->getOrigin());
 	baseImg->setPosition(updateImg->getPosition());
 };
-void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
+void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
 	cout << "first image path " << imgPaths[1] << "\n" << "second image path " << imgPaths[2] << endl;
 	vector<sf::Texture> images;
 	vector<sf::Sprite> sprites;
-	imageResolution imgSize = { 800, 600 };
+	windowSize winSize = { 800, 600 };
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	sf::RenderWindow window(sf::VideoMode(imgSize.width, imgSize.height, desktop.bitsPerPixel), "Liquid");
+	sf::RenderWindow window(sf::VideoMode(winSize.width, winSize.height, desktop.bitsPerPixel), "Liquid");
 
 	sf::Texture baseTexture;
 	sf::Sprite baseImage;
@@ -95,11 +95,11 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 	if (scaleFactor < 1)
 		baseImage.setScale(scaleFactor, scaleFactor);
 	baseImage.setOrigin(baseImage.getTexture()->getSize().x / 2.0f, baseImage.getTexture()->getSize().y / 2.0f);
-	baseImage.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
+	baseImage.setPosition(winSize.width / 2.0f, winSize.height / 2.0f);
 	int imageIndex = 1;
 
 	sf::View view;
-	view.setSize(imgSize.width, imgSize.height);
+	view.setSize(winSize.width, winSize.height);
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
 
@@ -124,10 +124,10 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 					baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
 					baseImage_copy.setTexture(baseTexture_copy);
 
-					float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
+					float scaleFactor = min((float)winSize.width / baseTexture_copy.getSize().x, (float)winSize.height / baseTexture_copy.getSize().y);
 					baseImage_copy.setScale(scaleFactor, scaleFactor);
 					baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
-					baseImage_copy.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
+					baseImage_copy.setPosition(winSize.width / 2.0f, winSize.height / 2.0f);
 					updateTextureSize(&baseImage, &baseTexture_copy, &baseImage_copy);
 				};
 				if (event.key.code == sf::Keyboard::H) {
@@ -137,10 +137,10 @@ void imageHandler::openMultipleImgs(char** imgPaths, short arg_c) {
 					baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
 					baseImage_copy.setTexture(baseTexture_copy);
 
-					float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
+					float scaleFactor = min((float)winSize.width / baseTexture_copy.getSize().x, (float)winSize.height / baseTexture_copy.getSize().y);
 					baseImage_copy.setScale(scaleFactor, scaleFactor);
 					baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
-					baseImage_copy.setPosition(imgSize.width / 2.0f, imgSize.height / 2.0f);
+					baseImage_copy.setPosition(winSize.width / 2.0f, winSize.height / 2.0f);
 					updateTextureSize(&baseImage, &baseTexture_copy, &baseImage_copy);
 				};
 			};
