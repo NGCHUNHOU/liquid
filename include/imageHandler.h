@@ -15,6 +15,7 @@ public:
 	static void openImage(string imgPath);
 	static void updateTextureSize(sf::Sprite* baseImg, sf::Texture* textre, sf::Sprite* updateImg);
 	static void openMultipleImages(char** imgsPath, short arg_c);
+	static void handleDisplayEvents(sf::RenderWindow& window, sf::View *view, sf::Sprite* imageSource, char** imgPaths, short arg_c, bool isMultipleImages = false);
 };
 
 #endif
