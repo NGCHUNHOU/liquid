@@ -1,6 +1,9 @@
 #include <imageHandler.h>
 #include <fstream>
 #include <iostream>
+
+windowSize imageHandler::winSize = { 800, 600 };
+
 void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowHeight) {
 		float windowRatio = windowWidth / (float) windowHeight;
 		float viewRatio = view->getSize().x / (float) view->getSize().y;
@@ -103,11 +106,10 @@ void imageHandler::openImage(string imgPath) {
 		exit(1);
 	}
 
-	windowSize winSize = { 800, 600 };
 	sf::Texture texture;
 	texture.loadFromFile(imgPath);
 	sf::Sprite imgSource(texture);
-	displayImage(winSize.width, winSize.height, &imgSource);
+	displayImage(imageHandler::winSize.width, imageHandler::winSize.height, &imgSource);
 	return;
 };
 void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, sf::Sprite *updateImg) {
@@ -121,9 +123,8 @@ void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
 	cout << "first image path " << imgPaths[1] << "\n" << "second image path " << imgPaths[2] << endl;
 	vector<sf::Texture> images;
 	vector<sf::Sprite> sprites;
-	windowSize winSize = { 800, 600 };
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	sf::RenderWindow window(sf::VideoMode(winSize.width, winSize.height, desktop.bitsPerPixel), "Liquid");
+	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height, desktop.bitsPerPixel), "Liquid");
 
 	sf::Texture baseTexture;
 	sf::Sprite baseImage;
@@ -134,11 +135,11 @@ void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
 	if (scaleFactor < 1)
 		baseImage.setScale(scaleFactor, scaleFactor);
 	baseImage.setOrigin(baseImage.getTexture()->getSize().x / 2.0f, baseImage.getTexture()->getSize().y / 2.0f);
-	baseImage.setPosition(winSize.width / 2.0f, winSize.height / 2.0f);
+	baseImage.setPosition(imageHandler::winSize.width / 2.0f, imageHandler::winSize.height / 2.0f);
 	int imageIndex = 1;
 
 	sf::View view;
-	view.setSize(winSize.width, winSize.height);
+	view.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
 	handleDisplayEvents(window, &view, &baseImage, imgPaths, arg_c, true);
