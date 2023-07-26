@@ -1,3 +1,0 @@
-C:\Users\knxuser\winapps\apps\cmake-3.21.2-windows-x86_64\bin\cmake.exe -E rm -f CMakeFiles\liquid.dir/objects.a
-C:\Users\knxuser\winapps\shims\llvm-ar.exe qc CMakeFiles\liquid.dir/objects.a @CMakeFiles\liquid.dir\objects1.rsp
-C:\Users\knxuser\winapps\shims\g++.exe -Wl,--whole-archive CMakeFiles\liquid.dir/objects.a -Wl,--no-whole-archive -o liquid.exe -Wl,--out-implib,libliquid.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\liquid.dir\linklibs.rsp
