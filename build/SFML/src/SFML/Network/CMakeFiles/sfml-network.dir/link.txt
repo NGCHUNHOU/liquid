@@ -1,0 +1,3 @@
+C:\Users\knxuser\winapps\apps\cmake-3.21.2-windows-x86_64\bin\cmake.exe -E rm -f CMakeFiles\sfml-network.dir/objects.a
+C:\Users\knxuser\winapps\shims\llvm-ar.exe qc CMakeFiles\sfml-network.dir/objects.a @CMakeFiles\sfml-network.dir\objects1.rsp
+C:\Users\knxuser\winapps\shims\g++.exe -shared -o ..\..\..\lib\sfml-network-2.dll -Wl,--out-implib,..\..\..\lib\libsfml-network.a -Wl,--major-image-version,2,--minor-image-version,6 -Wl,--whole-archive CMakeFiles\sfml-network.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\sfml-network.dir\linklibs.rsp
