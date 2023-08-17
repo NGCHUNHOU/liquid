@@ -1,7 +1,7 @@
 # Liquid
 Liquid is a media editor command-line interface (CLI)
 
-# build from source for windows x64
+# Build from source for x86_64-pc-windows-gnu with MinGW
 1. run `git submodule update --init` to install dependencies
 ```
 cmake -B ./build/ -G "MinGW Makefiles" -S .
