@@ -12,6 +12,7 @@ struct windowSize { int width; int height; };
 class imageHandler
 {
 public:
+  static void printImagesList(char** imgPaths, short arg_c);
 	static void setLetterboxView(sf::View* view, int windowWidth, int windowHeight);
 	static windowSize winSize;
 	static void displayImage(int width, int height, sf::Sprite* imgSource);

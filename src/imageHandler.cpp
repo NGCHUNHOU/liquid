@@ -119,10 +119,17 @@ void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, s
 	baseImg->setOrigin(updateImg->getOrigin());
 	baseImg->setPosition(updateImg->getPosition());
 };
+void imageHandler::printImagesList(char** imgPaths, short arg_c) {
+  short image_index = arg_c - 1;
+  while (image_index != 0) {
+    printf("opening image from %s\n", imgPaths[image_index]);
+    image_index -= 1;
+  };
+}
+
 void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
-	cout << "first image path " << imgPaths[1] << "\n" << "second image path " << imgPaths[2] << endl;
-	vector<sf::Texture> images;
-	vector<sf::Sprite> sprites;
+  printImagesList(imgPaths, arg_c);
+
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height, desktop.bitsPerPixel), "Liquid");
 
