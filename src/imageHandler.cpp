@@ -150,10 +150,10 @@ void imageHandler::handleDisplayEvents2(sf::RenderWindow& window, std::vector<st
           // baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
           // baseImage_copy.setTexture(baseTexture_copy);
 
-          // float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
-          // baseImage_copy.setScale(scaleFactor, scaleFactor);
-          // baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
-          // baseImage_copy.setPosition(800 / 2.0f, 600 / 2.0f);
+          float scaleFactor = min((float)800 / imgf[imageIndex]->baseTexture.getSize().x, (float)600 / imgf[imageIndex]->baseTexture.getSize().y);
+          imgf[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
+          imgf[imageIndex]->baseImage.setOrigin(imgf[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, imgf[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
+          imgf[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
           // updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
         };
         if (event.key.code == sf::Keyboard::H) {
@@ -164,10 +164,10 @@ void imageHandler::handleDisplayEvents2(sf::RenderWindow& window, std::vector<st
           // baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
           // baseImage_copy.setTexture(baseTexture_copy);
 
-          // float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
-          // baseImage_copy.setScale(scaleFactor, scaleFactor);
-          // baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
-          // baseImage_copy.setPosition(800 / 2.0f, 600 / 2.0f);
+          float scaleFactor = min((float)800 / imgf[imageIndex]->baseTexture.getSize().x, (float)600 / imgf[imageIndex]->baseTexture.getSize().y);
+          imgf[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
+          imgf[imageIndex]->baseImage.setOrigin(imgf[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, imgf[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
+          imgf[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
           // updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
         };
       };
@@ -188,11 +188,12 @@ void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height, desktop.bitsPerPixel), "Liquid");
   std::vector<std::unique_ptr<image_frame>> image_frames;
+  std::unique_ptr<image_frame> base_image_frame;
 	// sf::Texture baseTexture;
 	// sf::Sprite baseImage;
   for (int i=1;i<arg_c;++i) {
     printf("opening image from %s\n", imgPaths[i]);
-    std::unique_ptr<image_frame> base_image_frame(new image_frame());
+    base_image_frame = std::unique_ptr<image_frame>(new image_frame());
     // baseTexture.loadFromFile(imgPaths[1]);
     // baseImage.setTexture(baseTexture);
     base_image_frame.get()->baseTexture.loadFromFile(imgPaths[i]);
