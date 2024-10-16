@@ -144,31 +144,35 @@ void imageHandler::handleDisplayEvents2(sf::RenderWindow& window, std::vector<st
       if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::L) {
           imageIndex = (imageIndex + 1) % imgf.size();
-          // imageIndex += 1;
-          // if (imageIndex >= imgf.size())
-          //   imageIndex = 0;
-          // baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
-          // baseImage_copy.setTexture(baseTexture_copy);
+          /*
+          imageIndex += 1;
+          if (imageIndex >= imgf.size())
+            imageIndex = 0;
+          baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
+          baseImage_copy.setTexture(baseTexture_copy);
 
           float scaleFactor = min((float)800 / imgf[imageIndex]->baseTexture.getSize().x, (float)600 / imgf[imageIndex]->baseTexture.getSize().y);
           imgf[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
           imgf[imageIndex]->baseImage.setOrigin(imgf[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, imgf[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
           imgf[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
-          // updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
+          updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
+          */
         };
         if (event.key.code == sf::Keyboard::H) {
           imageIndex = (imageIndex - 1) % imgf.size();
-          // imageIndex -= 1;
-          // if (imageIndex < 1)
-          //   imageIndex = arg_c - 1;
-          // baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
-          // baseImage_copy.setTexture(baseTexture_copy);
+          /*
+          imageIndex -= 1;
+          if (imageIndex < 1)
+            imageIndex = arg_c - 1;
+          baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
+          baseImage_copy.setTexture(baseTexture_copy);
 
           float scaleFactor = min((float)800 / imgf[imageIndex]->baseTexture.getSize().x, (float)600 / imgf[imageIndex]->baseTexture.getSize().y);
           imgf[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
           imgf[imageIndex]->baseImage.setOrigin(imgf[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, imgf[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
           imgf[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
-          // updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
+          updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
+          */
         };
       };
 
