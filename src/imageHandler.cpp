@@ -1,6 +1,7 @@
 #include <imageHandler.h>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 windowSize imageHandler::winSize = { 800, 600 };
 
@@ -127,27 +128,92 @@ void imageHandler::printImagesList(char** imgPaths, short arg_c) {
   };
 }
 
+void imageHandler::handleDisplayEvents2(sf::RenderWindow& window, std::vector<std::unique_ptr<image_frame>>& imgf) {
+	int imageIndex = 0;
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+				break;
+			}
+			if (event.type == sf::Event::Resized) {
+				setLetterboxView(&imgf[imageIndex]->baseView, event.size.width, event.size.height);
+			};
+
+      if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::L) {
+          imageIndex = (imageIndex + 1) % imgf.size();
+          // imageIndex += 1;
+          // if (imageIndex >= imgf.size())
+          //   imageIndex = 0;
+          // baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
+          // baseImage_copy.setTexture(baseTexture_copy);
+
+          // float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
+          // baseImage_copy.setScale(scaleFactor, scaleFactor);
+          // baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
+          // baseImage_copy.setPosition(800 / 2.0f, 600 / 2.0f);
+          // updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
+        };
+        if (event.key.code == sf::Keyboard::H) {
+          imageIndex = (imageIndex - 1) % imgf.size();
+          // imageIndex -= 1;
+          // if (imageIndex < 1)
+          //   imageIndex = arg_c - 1;
+          // baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
+          // baseImage_copy.setTexture(baseTexture_copy);
+
+          // float scaleFactor = min((float)800 / baseTexture_copy.getSize().x, (float)600 / baseTexture_copy.getSize().y);
+          // baseImage_copy.setScale(scaleFactor, scaleFactor);
+          // baseImage_copy.setOrigin(baseImage_copy.getTexture()->getSize().x / 2.0f, baseImage_copy.getTexture()->getSize().y / 2.0f);
+          // baseImage_copy.setPosition(800 / 2.0f, 600 / 2.0f);
+          // updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
+        };
+      };
+
+		};
+		window.clear();
+		// window.setView(*view);
+		// window.draw(*imageSource);
+		window.setView(imgf[imageIndex]->baseView);
+		window.draw(imgf[imageIndex]->baseImage);
+		window.display();
+	};
+}
+
 void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
-  printImagesList(imgPaths, arg_c);
+  // printImagesList(imgPaths, arg_c);
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height, desktop.bitsPerPixel), "Liquid");
+  std::vector<std::unique_ptr<image_frame>> image_frames;
+	// sf::Texture baseTexture;
+	// sf::Sprite baseImage;
+  for (int i=1;i<arg_c;++i) {
+    printf("opening image from %s\n", imgPaths[i]);
+    std::unique_ptr<image_frame> base_image_frame(new image_frame());
+    // baseTexture.loadFromFile(imgPaths[1]);
+    // baseImage.setTexture(baseTexture);
+    base_image_frame.get()->baseTexture.loadFromFile(imgPaths[i]);
+    base_image_frame.get()->baseImage.setTexture(base_image_frame.get()->baseTexture);
+    float scaleFactor = min((float)window.getSize().x / base_image_frame.get()->baseTexture.getSize().x, (float)window.getSize().y / base_image_frame.get()->baseTexture.getSize().y);
+    if (scaleFactor < 1) {
+      base_image_frame.get()->baseImage.setScale(scaleFactor, scaleFactor);
+    }
+    base_image_frame.get()->baseImage.setOrigin(base_image_frame.get()->baseImage.getTexture()->getSize().x / 2.0f, base_image_frame.get()->baseImage.getTexture()->getSize().y / 2.0f);
+    base_image_frame.get()->baseImage.setPosition(imageHandler::winSize.width / 2.0f, imageHandler::winSize.height / 2.0f);
+    // int imageIndex = 1;
 
-	sf::Texture baseTexture;
-	sf::Sprite baseImage;
+    // sf::View view;
+    // view.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
+    // view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
-	baseTexture.loadFromFile(imgPaths[1]);
-	baseImage.setTexture(baseTexture);
-	float scaleFactor = min((float)window.getSize().x / baseTexture.getSize().x, (float)window.getSize().y / baseTexture.getSize().y);
-	if (scaleFactor < 1)
-		baseImage.setScale(scaleFactor, scaleFactor);
-	baseImage.setOrigin(baseImage.getTexture()->getSize().x / 2.0f, baseImage.getTexture()->getSize().y / 2.0f);
-	baseImage.setPosition(imageHandler::winSize.width / 2.0f, imageHandler::winSize.height / 2.0f);
-	int imageIndex = 1;
+    base_image_frame.get()->baseView.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
+    base_image_frame.get()->baseView.setCenter(base_image_frame.get()->baseView.getSize().x / 2, base_image_frame.get()->baseView.getSize().y / 2);
 
-	sf::View view;
-	view.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
-	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
-
-	handleDisplayEvents(window, &view, &baseImage, imgPaths, arg_c, true);
+    image_frames.emplace_back(std::move(base_image_frame));
+  };
+	// handleDisplayEvents(window, &view, &baseImage, imgPaths, arg_c, true);
+	handleDisplayEvents2(window, image_frames);
 };
