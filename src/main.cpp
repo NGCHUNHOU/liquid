@@ -15,8 +15,7 @@ void usage() {
 }
 
 void try_openimg(argCounter& argCt) {
-  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height, desktop.bitsPerPixel), "Liquid");
+	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height), "Liquid");
   imageHandler imgHandler;
   imgHandler.initArgCounter(argCt);
   imgHandler.initWindow(window);
