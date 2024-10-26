@@ -136,7 +136,7 @@ void imageHandler::printImagesList(char** imgPaths, short arg_c) {
   };
 }
 
-void imageHandler::handleDisplayEvents2(std::vector<std::unique_ptr<image_frame>>& imgf) {
+void imageHandler::handleDisplayEvents2() {
 	int imageIndex = 0;
 	while (window->isOpen()) {
 		sf::Event event;
@@ -146,12 +146,12 @@ void imageHandler::handleDisplayEvents2(std::vector<std::unique_ptr<image_frame>
 				break;
 			}
 			if (event.type == sf::Event::Resized) {
-				setLetterboxView(&imgf[imageIndex]->baseView, event.size.width, event.size.height);
+				setLetterboxView(&image_frames[imageIndex]->baseView, event.size.width, event.size.height);
 			};
 
       if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::L) {
-          imageIndex = (imageIndex + 1) % imgf.size();
+          imageIndex = (imageIndex + 1) % image_frames.size();
           /*
           imageIndex += 1;
           if (imageIndex >= imgf.size())
@@ -167,7 +167,7 @@ void imageHandler::handleDisplayEvents2(std::vector<std::unique_ptr<image_frame>
           */
         };
         if (event.key.code == sf::Keyboard::H) {
-          imageIndex = (imageIndex - 1) % imgf.size();
+          imageIndex = (imageIndex - 1) % image_frames.size();
           /*
           imageIndex -= 1;
           if (imageIndex < 1)
@@ -188,8 +188,8 @@ void imageHandler::handleDisplayEvents2(std::vector<std::unique_ptr<image_frame>
 		window->clear();
 		// window.setView(*view);
 		// window.draw(*imageSource);
-		window->setView(imgf[imageIndex]->baseView);
-		window->draw(imgf[imageIndex]->baseImage);
+		window->setView(image_frames[imageIndex]->baseView);
+		window->draw(image_frames[imageIndex]->baseImage);
 		window->display();
 	};
 }
@@ -197,7 +197,6 @@ void imageHandler::handleDisplayEvents2(std::vector<std::unique_ptr<image_frame>
 void imageHandler::openMultipleImages() {
   // printImagesList(imgPaths, arg_c);
 
-  std::vector<std::unique_ptr<image_frame>> image_frames;
   std::unique_ptr<image_frame> base_image_frame;
 	// sf::Texture baseTexture;
 	// sf::Sprite baseImage;
@@ -226,5 +225,5 @@ void imageHandler::openMultipleImages() {
     image_frames.emplace_back(std::move(base_image_frame));
   };
 	// handleDisplayEvents(window, &view, &baseImage, imgPaths, arg_c, true);
-	handleDisplayEvents2(image_frames);
+	handleDisplayEvents2();
 };

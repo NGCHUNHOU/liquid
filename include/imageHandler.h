@@ -1,6 +1,5 @@
 #ifndef IMAGEHANDLER_H
 #define IMAGEHANDLER_H
-#pragma once
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -22,6 +21,7 @@ class imageHandler
 private:
   argCounter *argCt;
   sf::RenderWindow *window;
+  std::vector<std::unique_ptr<image_frame>> image_frames;
 public:
   static void printImagesList(char** imgPaths, short arg_c);
 	static void setLetterboxView(sf::View* view, int windowWidth, int windowHeight);
@@ -33,7 +33,7 @@ public:
   void initArgCounter(argCounter& argCt_ptr);
   void initWindow(sf::RenderWindow& win);
 	static void handleDisplayEvents(sf::RenderWindow& window, sf::View *view, sf::Sprite* imageSource, char** imgPaths, short arg_c, bool isMultipleImages = false);
-	void handleDisplayEvents2(std::vector<std::unique_ptr<image_frame>>& imgf);
+	void handleDisplayEvents2();
 };
 
 #endif
