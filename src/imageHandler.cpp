@@ -5,6 +5,14 @@
 
 windowSize imageHandler::winSize = { 800, 600 };
 
+void imageHandler::initArgCounter(argCounter& argCt_ptr) {
+  argCt = &argCt_ptr;
+};
+
+void imageHandler::initWindow(sf::RenderWindow& win) {
+  window = &win;
+}
+
 void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowHeight) {
 		float windowRatio = windowWidth / (float) windowHeight;
 		float viewRatio = view->getSize().x / (float) view->getSize().y;
@@ -128,13 +136,13 @@ void imageHandler::printImagesList(char** imgPaths, short arg_c) {
   };
 }
 
-void imageHandler::handleDisplayEvents2(sf::RenderWindow& window, std::vector<std::unique_ptr<image_frame>>& imgf) {
+void imageHandler::handleDisplayEvents2(std::vector<std::unique_ptr<image_frame>>& imgf) {
 	int imageIndex = 0;
-	while (window.isOpen()) {
+	while (window->isOpen()) {
 		sf::Event event;
-		while (window.pollEvent(event)) {
+		while (window->pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
-				window.close();
+				window->close();
 				break;
 			}
 			if (event.type == sf::Event::Resized) {
@@ -177,32 +185,30 @@ void imageHandler::handleDisplayEvents2(sf::RenderWindow& window, std::vector<st
       };
 
 		};
-		window.clear();
+		window->clear();
 		// window.setView(*view);
 		// window.draw(*imageSource);
-		window.setView(imgf[imageIndex]->baseView);
-		window.draw(imgf[imageIndex]->baseImage);
-		window.display();
+		window->setView(imgf[imageIndex]->baseView);
+		window->draw(imgf[imageIndex]->baseImage);
+		window->display();
 	};
 }
 
-void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
+void imageHandler::openMultipleImages() {
   // printImagesList(imgPaths, arg_c);
 
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height, desktop.bitsPerPixel), "Liquid");
   std::vector<std::unique_ptr<image_frame>> image_frames;
   std::unique_ptr<image_frame> base_image_frame;
 	// sf::Texture baseTexture;
 	// sf::Sprite baseImage;
-  for (int i=1;i<arg_c;++i) {
-    printf("opening image from %s\n", imgPaths[i]);
+  for (int i = 1 ; i < argCt->arguments_count ; ++i) {
+    printf("opening image from %s\n", argCt->arguments_vector[i]);
     base_image_frame = std::unique_ptr<image_frame>(new image_frame());
     // baseTexture.loadFromFile(imgPaths[1]);
     // baseImage.setTexture(baseTexture);
-    base_image_frame.get()->baseTexture.loadFromFile(imgPaths[i]);
+    base_image_frame.get()->baseTexture.loadFromFile(argCt->arguments_vector[i]);
     base_image_frame.get()->baseImage.setTexture(base_image_frame.get()->baseTexture);
-    float scaleFactor = min((float)window.getSize().x / base_image_frame.get()->baseTexture.getSize().x, (float)window.getSize().y / base_image_frame.get()->baseTexture.getSize().y);
+    float scaleFactor = min((float)window->getSize().x / base_image_frame.get()->baseTexture.getSize().x, (float)window->getSize().y / base_image_frame.get()->baseTexture.getSize().y);
     if (scaleFactor < 1) {
       base_image_frame.get()->baseImage.setScale(scaleFactor, scaleFactor);
     }
@@ -220,5 +226,5 @@ void imageHandler::openMultipleImages(char** imgPaths, short arg_c) {
     image_frames.emplace_back(std::move(base_image_frame));
   };
 	// handleDisplayEvents(window, &view, &baseImage, imgPaths, arg_c, true);
-	handleDisplayEvents2(window, image_frames);
+	handleDisplayEvents2(image_frames);
 };

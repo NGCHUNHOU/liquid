@@ -19,7 +19,7 @@ struct option {
 	int val;
 };
 
-struct argCounter { int fileCount = 0; int flagCount = 0; };
+struct argCounter { int fileCount; int flagCount; int arguments_count; char **arguments_vector; };
 
 class argParser {
 public:

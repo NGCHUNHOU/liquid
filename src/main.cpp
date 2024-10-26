@@ -14,16 +14,22 @@ void usage() {
 	return;
 }
 
-void try_openimg(int arg_c, char **arg_v, argCounter* argCt) {
-	if (arg_c == 2 && argCt->flagCount == 0) {
+void try_openimg(argCounter& argCt) {
+  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height, desktop.bitsPerPixel), "Liquid");
+  imageHandler imgHandler;
+  imgHandler.initArgCounter(argCt);
+  imgHandler.initWindow(window);
+
+	if (argCt.arguments_count == 2 && argCt.flagCount == 0) {
 		cout << "opening single file" << endl;
-		imageHandler::openImage(arg_v[1]);
+		imageHandler::openImage(argCt.arguments_vector[1]);
 		exit(0);
-	} else if (arg_c > 2 && argCt->fileCount == (arg_c - 1)) {
+	} else if (argCt.arguments_count > 2 && argCt.fileCount == (argCt.arguments_count - 1)) {
 		cout << "all arguments type are file" << endl;
-		imageHandler::openMultipleImages(arg_v, arg_c);
+		imgHandler.openMultipleImages();
 		exit(0);
-	} else if (arg_c > 2 && argCt->flagCount > 0) {
+	} else if (argCt.arguments_count > 2 && argCt.flagCount > 0) {
 		cout << "the arguments have option flag and value" << endl;
 		// opemMultipleImgWithFlag() here
 	} else {
@@ -43,9 +49,9 @@ int main(int argc, char** argv) {
 		{"all", optional_argument,  (int*)&flags[0], 2}
 	};
 
-	argCounter ac;
+	argCounter arg_counter = {0, 0, argc, argv};
 	char opt = NULL;
-	while ((opt = argParser::getopt_long(argc, argv, flags, &ac)) != -1 && (ac.fileCount + ac.flagCount) < argc) {
+	while ((opt = argParser::getopt_long(arg_counter.arguments_count, arg_counter.arguments_vector, flags, &arg_counter)) != -1 && (arg_counter.fileCount + arg_counter.flagCount) < arg_counter.arguments_count) {
 		switch (opt) {
 		case 'h':
 			usage();
@@ -54,7 +60,7 @@ int main(int argc, char** argv) {
 			cout << "show all page" << endl;
 			break;
 		case '%':
-			try_openimg(argc, argv, &ac);
+			try_openimg(arg_counter);
 			break;
 		default:
 			cout << "unknown option" << endl;
