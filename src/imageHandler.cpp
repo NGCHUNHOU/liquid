@@ -9,8 +9,9 @@ void imageHandler::initArgCounter(argCounter& argCt_ptr) {
   argCt = &argCt_ptr;
 };
 
-void imageHandler::initWindow(sf::RenderWindow& win) {
+void imageHandler::initWindowFrame(sf::RenderWindow& win, sf::View& v) {
   window = &win;
+  view = &v;
 }
 
 void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowHeight) {
@@ -146,7 +147,7 @@ void imageHandler::handleDisplayEvents2() {
 				break;
 			}
 			if (event.type == sf::Event::Resized) {
-				setLetterboxView(&image_frames[imageIndex]->baseView, event.size.width, event.size.height);
+				setLetterboxView(view, event.size.width, event.size.height);
 			};
 
       if (event.type == sf::Event::KeyPressed) {
@@ -188,23 +189,18 @@ void imageHandler::handleDisplayEvents2() {
 		window->clear();
 		// window.setView(*view);
 		// window.draw(*imageSource);
-		window->setView(image_frames[imageIndex]->baseView);
+		// window->setView(image_frames[imageIndex]->baseView);
+    window->setView(*view);
 		window->draw(image_frames[imageIndex]->baseImage);
 		window->display();
 	};
 }
 
 void imageHandler::openMultipleImages() {
-  // printImagesList(imgPaths, arg_c);
-
   std::unique_ptr<image_frame> base_image_frame;
-	// sf::Texture baseTexture;
-	// sf::Sprite baseImage;
   for (int i = 1 ; i < argCt->arguments_count ; ++i) {
     printf("opening image from %s\n", argCt->arguments_vector[i]);
     base_image_frame = std::unique_ptr<image_frame>(new image_frame());
-    // baseTexture.loadFromFile(imgPaths[1]);
-    // baseImage.setTexture(baseTexture);
     base_image_frame.get()->baseTexture.loadFromFile(argCt->arguments_vector[i]);
     base_image_frame.get()->baseImage.setTexture(base_image_frame.get()->baseTexture);
     float scaleFactor = min((float)window->getSize().x / base_image_frame.get()->baseTexture.getSize().x, (float)window->getSize().y / base_image_frame.get()->baseTexture.getSize().y);
@@ -213,17 +209,8 @@ void imageHandler::openMultipleImages() {
     }
     base_image_frame.get()->baseImage.setOrigin(base_image_frame.get()->baseImage.getTexture()->getSize().x / 2.0f, base_image_frame.get()->baseImage.getTexture()->getSize().y / 2.0f);
     base_image_frame.get()->baseImage.setPosition(imageHandler::winSize.width / 2.0f, imageHandler::winSize.height / 2.0f);
-    // int imageIndex = 1;
-
-    // sf::View view;
-    // view.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
-    // view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
-
-    base_image_frame.get()->baseView.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
-    base_image_frame.get()->baseView.setCenter(base_image_frame.get()->baseView.getSize().x / 2, base_image_frame.get()->baseView.getSize().y / 2);
 
     image_frames.emplace_back(std::move(base_image_frame));
   };
-	// handleDisplayEvents(window, &view, &baseImage, imgPaths, arg_c, true);
 	handleDisplayEvents2();
 };

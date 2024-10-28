@@ -16,9 +16,13 @@ void usage() {
 
 void try_openimg(argCounter& argCt) {
 	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height), "Liquid");
+  sf::View view;
+	view.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
+	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
+
   imageHandler imgHandler;
   imgHandler.initArgCounter(argCt);
-  imgHandler.initWindow(window);
+  imgHandler.initWindowFrame(window, view);
 
 	if (argCt.arguments_count == 2 && argCt.flagCount == 0) {
 		cout << "opening single file" << endl;

@@ -13,7 +13,6 @@ struct windowSize { int width; int height; };
 struct image_frame {
   sf::Texture baseTexture;
 	sf::Sprite baseImage;
-	sf::View baseView;
 };
 
 class imageHandler
@@ -22,6 +21,7 @@ private:
   argCounter *argCt;
   sf::RenderWindow *window;
   std::vector<std::unique_ptr<image_frame>> image_frames;
+  sf::View *view;
 public:
   static void printImagesList(char** imgPaths, short arg_c);
 	static void setLetterboxView(sf::View* view, int windowWidth, int windowHeight);
@@ -31,7 +31,7 @@ public:
 	static void updateTextureSize(sf::Sprite* baseImg, sf::Texture* textre, sf::Sprite* updateImg);
 	void openMultipleImages();
   void initArgCounter(argCounter& argCt_ptr);
-  void initWindow(sf::RenderWindow& win);
+  void initWindowFrame(sf::RenderWindow& win, sf::View& v);
 	static void handleDisplayEvents(sf::RenderWindow& window, sf::View *view, sf::Sprite* imageSource, char** imgPaths, short arg_c, bool isMultipleImages = false);
 	void handleDisplayEvents2();
 };
