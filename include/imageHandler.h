@@ -20,18 +20,19 @@ class imageHandler
 private:
   argCounter *argCt;
   sf::RenderWindow *window;
+  windowSize *winSize;
   std::vector<std::unique_ptr<image_frame>> image_frames;
   sf::View *view;
 public:
+  static windowSize global_winSize;
   static void printImagesList(char** imgPaths, short arg_c);
 	static void setLetterboxView(sf::View* view, int windowWidth, int windowHeight);
-	static windowSize winSize;
 	static void displayImage(int width, int height, sf::Sprite* imgSource);
 	static void openImage(string imgPath);
 	static void updateTextureSize(sf::Sprite* baseImg, sf::Texture* textre, sf::Sprite* updateImg);
 	void openMultipleImages();
   void initArgCounter(argCounter& argCt_ptr);
-  void initWindowFrame(sf::RenderWindow& win, sf::View& v);
+  void initWindowFrame(sf::RenderWindow& win, sf::View& v, windowSize& w);
 	static void handleDisplayEvents(sf::RenderWindow& window, sf::View *view, sf::Sprite* imageSource, char** imgPaths, short arg_c, bool isMultipleImages = false);
 	void handleDisplayEvents2();
 };

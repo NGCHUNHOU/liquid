@@ -3,15 +3,16 @@
 #include <iostream>
 #include <vector>
 
-windowSize imageHandler::winSize = { 800, 600 };
+windowSize imageHandler::global_winSize = { 800, 600 };
 
 void imageHandler::initArgCounter(argCounter& argCt_ptr) {
   argCt = &argCt_ptr;
 };
 
-void imageHandler::initWindowFrame(sf::RenderWindow& win, sf::View& v) {
+void imageHandler::initWindowFrame(sf::RenderWindow& win, sf::View& v, windowSize& w) {
   window = &win;
   view = &v;
+  winSize = &w;
 }
 
 void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowHeight) {
@@ -119,7 +120,7 @@ void imageHandler::openImage(string imgPath) {
 	sf::Texture texture;
 	texture.loadFromFile(imgPath);
 	sf::Sprite imgSource(texture);
-	displayImage(imageHandler::winSize.width, imageHandler::winSize.height, &imgSource);
+	displayImage(imageHandler::global_winSize.width, imageHandler::global_winSize.height, &imgSource);
 	return;
 };
 void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, sf::Sprite *updateImg) {
@@ -161,10 +162,10 @@ void imageHandler::handleDisplayEvents2() {
           baseImage_copy.setTexture(baseTexture_copy);
           */
 
-          float scaleFactor = min((float)800 / image_frames[imageIndex]->baseTexture.getSize().x, (float)600 / image_frames[imageIndex]->baseTexture.getSize().y);
+          float scaleFactor = min((float)winSize->width / image_frames[imageIndex]->baseTexture.getSize().x, (float)winSize->height / image_frames[imageIndex]->baseTexture.getSize().y);
           image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
           image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
-          image_frames[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
+          image_frames[imageIndex]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
           /*
           updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
           */
@@ -179,10 +180,10 @@ void imageHandler::handleDisplayEvents2() {
           baseImage_copy.setTexture(baseTexture_copy);
           */
 
-          float scaleFactor = min((float)800 / image_frames[imageIndex]->baseTexture.getSize().x, (float)600 / image_frames[imageIndex]->baseTexture.getSize().y);
+          float scaleFactor = min((float)winSize->width / image_frames[imageIndex]->baseTexture.getSize().x, (float)winSize->height / image_frames[imageIndex]->baseTexture.getSize().y);
           image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
           image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
-          image_frames[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
+          image_frames[imageIndex]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
           /*
           updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
@@ -208,12 +209,10 @@ void imageHandler::openMultipleImages() {
     base_image_frame = std::unique_ptr<image_frame>(new image_frame());
     base_image_frame.get()->baseTexture.loadFromFile(argCt->arguments_vector[i]);
     base_image_frame.get()->baseImage.setTexture(base_image_frame.get()->baseTexture);
-    float scaleFactor = min((float)window->getSize().x / base_image_frame.get()->baseTexture.getSize().x, (float)window->getSize().y / base_image_frame.get()->baseTexture.getSize().y);
-    if (scaleFactor < 1) {
-      base_image_frame.get()->baseImage.setScale(scaleFactor, scaleFactor);
-    }
+    float scaleFactor = min((float)winSize->width / base_image_frame.get()->baseTexture.getSize().x, (float)winSize->height / base_image_frame.get()->baseTexture.getSize().y);
+    base_image_frame.get()->baseImage.setScale(scaleFactor, scaleFactor);
     base_image_frame.get()->baseImage.setOrigin(base_image_frame.get()->baseImage.getTexture()->getSize().x / 2.0f, base_image_frame.get()->baseImage.getTexture()->getSize().y / 2.0f);
-    base_image_frame.get()->baseImage.setPosition(imageHandler::winSize.width / 2.0f, imageHandler::winSize.height / 2.0f);
+    base_image_frame.get()->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
     image_frames.emplace_back(std::move(base_image_frame));
   };

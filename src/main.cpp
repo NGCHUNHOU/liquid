@@ -15,14 +15,15 @@ void usage() {
 }
 
 void try_openimg(argCounter& argCt) {
-	sf::RenderWindow window(sf::VideoMode(imageHandler::winSize.width, imageHandler::winSize.height), "Liquid");
+  windowSize winSize = {static_cast<int>(sf::VideoMode::getDesktopMode().width * 0.8f), static_cast<int>(sf::VideoMode::getDesktopMode().height * 0.8f)};
+	sf::RenderWindow window(sf::VideoMode(winSize.width, winSize.height), "Liquid");
   sf::View view;
-	view.setSize(imageHandler::winSize.width, imageHandler::winSize.height);
+	view.setSize(winSize.width, winSize.height);
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
   imageHandler imgHandler;
   imgHandler.initArgCounter(argCt);
-  imgHandler.initWindowFrame(window, view);
+  imgHandler.initWindowFrame(window, view, winSize);
 
 	if (argCt.arguments_count == 2 && argCt.flagCount == 0) {
 		cout << "opening single file" << endl;
