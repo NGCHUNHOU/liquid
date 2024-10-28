@@ -159,11 +159,13 @@ void imageHandler::handleDisplayEvents2() {
             imageIndex = 0;
           baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
           baseImage_copy.setTexture(baseTexture_copy);
+          */
 
-          float scaleFactor = min((float)800 / imgf[imageIndex]->baseTexture.getSize().x, (float)600 / imgf[imageIndex]->baseTexture.getSize().y);
-          imgf[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
-          imgf[imageIndex]->baseImage.setOrigin(imgf[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, imgf[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
-          imgf[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
+          float scaleFactor = min((float)800 / image_frames[imageIndex]->baseTexture.getSize().x, (float)600 / image_frames[imageIndex]->baseTexture.getSize().y);
+          image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
+          image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
+          image_frames[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
+          /*
           updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
           */
         };
@@ -175,11 +177,14 @@ void imageHandler::handleDisplayEvents2() {
             imageIndex = arg_c - 1;
           baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
           baseImage_copy.setTexture(baseTexture_copy);
+          */
 
-          float scaleFactor = min((float)800 / imgf[imageIndex]->baseTexture.getSize().x, (float)600 / imgf[imageIndex]->baseTexture.getSize().y);
-          imgf[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
-          imgf[imageIndex]->baseImage.setOrigin(imgf[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, imgf[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
-          imgf[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
+          float scaleFactor = min((float)800 / image_frames[imageIndex]->baseTexture.getSize().x, (float)600 / image_frames[imageIndex]->baseTexture.getSize().y);
+          image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
+          image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
+          image_frames[imageIndex]->baseImage.setPosition(800 / 2.0f, 600 / 2.0f);
+
+          /*
           updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
           */
         };
