@@ -96,33 +96,31 @@ void imageHandler::handleDisplayEvents(sf::RenderWindow& window, sf::View *view,
 }
 
 void imageHandler::displayImage(int width, int height, sf::Sprite* imgSource) {
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	sf::RenderWindow window(sf::VideoMode(width, height, desktop.bitsPerPixel), "Liquid");
-	// find the min ratio value between width and height, set scale with min ratio if the ratio value < 1
-	float scaleFactor = min((float)window.getSize().x / imgSource->getTexture()->getSize().x, (float)window.getSize().y / imgSource->getTexture()->getSize().y);
-	if (scaleFactor < 1)
-		imgSource->setScale(scaleFactor, scaleFactor);
+  float scaleFactor = min((float)winSize->width / imgSource->getTexture()->getSize().x, (float)winSize->height / imgSource->getTexture()->getSize().y);
+  imgSource->setScale(scaleFactor, scaleFactor);
 	imgSource->setOrigin(imgSource->getTexture()->getSize().x / 2.0f, imgSource->getTexture()->getSize().y / 2.0f);
 	imgSource->setPosition(width / 2.0f, height / 2.0f);
 	sf::View view;
 	view.setSize(width, height);
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
-	handleDisplayEvents(window, &view, imgSource, nullptr, 0);
+	handleDisplayEvents(*window, &view, imgSource, nullptr, 0);
 };
+
 void imageHandler::openImage(string imgPath) {
 	ifstream file(imgPath);
 	if (!file.good()) {
-		cout << "failed to open the images" << endl;
+		cout << "failed to open the image" << endl;
 		exit(1);
 	}
 
 	sf::Texture texture;
 	texture.loadFromFile(imgPath);
 	sf::Sprite imgSource(texture);
-	displayImage(imageHandler::global_winSize.width, imageHandler::global_winSize.height, &imgSource);
-	return;
+
+	displayImage(winSize->width, winSize->height, &imgSource);
 };
+
 void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, sf::Sprite *updateImg) {
 	baseImg->setTexture(*textre);
 	baseImg->setTextureRect(sf::IntRect(0, 0, textre->getSize().x, textre->getSize().y));
@@ -154,48 +152,25 @@ void imageHandler::handleDisplayEvents2() {
       if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::L) {
           imageIndex = (imageIndex + 1) % image_frames.size();
-          /*
-          imageIndex += 1;
-          if (imageIndex >= imgf.size())
-            imageIndex = 0;
-          baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
-          baseImage_copy.setTexture(baseTexture_copy);
-          */
 
           float scaleFactor = min((float)winSize->width / image_frames[imageIndex]->baseTexture.getSize().x, (float)winSize->height / image_frames[imageIndex]->baseTexture.getSize().y);
           image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
           image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
           image_frames[imageIndex]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
-          /*
-          updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
-          */
         };
         if (event.key.code == sf::Keyboard::H) {
           imageIndex = (imageIndex - 1) % image_frames.size();
-          /*
-          imageIndex -= 1;
-          if (imageIndex < 1)
-            imageIndex = arg_c - 1;
-          baseTexture_copy.loadFromFile(imgPaths[imageIndex]);
-          baseImage_copy.setTexture(baseTexture_copy);
-          */
 
           float scaleFactor = min((float)winSize->width / image_frames[imageIndex]->baseTexture.getSize().x, (float)winSize->height / image_frames[imageIndex]->baseTexture.getSize().y);
           image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
           image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
           image_frames[imageIndex]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
-          /*
-          updateTextureSize(imageSource, &baseTexture_copy, &baseImage_copy);
-          */
         };
       };
 
 		};
 		window->clear();
-		// window.setView(*view);
-		// window.draw(*imageSource);
-		// window->setView(image_frames[imageIndex]->baseView);
     window->setView(*view);
 		window->draw(image_frames[imageIndex]->baseImage);
 		window->display();

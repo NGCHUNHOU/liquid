@@ -27,7 +27,7 @@ void try_openimg(argCounter& argCt) {
 
 	if (argCt.arguments_count == 2 && argCt.flagCount == 0) {
 		cout << "opening single file" << endl;
-		imageHandler::openImage(argCt.arguments_vector[1]);
+		imgHandler.openImage(argCt.arguments_vector[1]);
 		exit(0);
 	} else if (argCt.arguments_count > 2 && argCt.fileCount == (argCt.arguments_count - 1)) {
 		cout << "all arguments type are file" << endl;
