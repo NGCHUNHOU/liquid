@@ -27,8 +27,8 @@ public:
   static windowSize global_winSize;
   static void printImagesList(char** imgPaths, short arg_c);
 	static void setLetterboxView(sf::View* view, int windowWidth, int windowHeight);
-	void displayImage(int width, int height, sf::Sprite* imgSource);
-	void openImage(string imgPath);
+	void displayImage(sf::Sprite* imgSource);
+	void openSingleImage(string imgPath);
 	static void updateTextureSize(sf::Sprite* baseImg, sf::Texture* textre, sf::Sprite* updateImg);
 	void openMultipleImages();
   void initArgCounter(argCounter& argCt_ptr);
