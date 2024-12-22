@@ -41,26 +41,6 @@ void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowH
 		return;
 }
 
-void imageHandler::handleDisplayEvents(sf::RenderWindow& window, sf::View *view, sf::Sprite* imageSource, char** imgPaths, short arg_c, bool isMultipleImages) {
-	int imageIndex = 1;
-	while (window.isOpen()) {
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed) {
-				window.close();
-				break;
-			}
-			if (event.type == sf::Event::Resized) {
-				setLetterboxView(view, event.size.width, event.size.height);
-			};
-		};
-		window.clear();
-		window.setView(*view);
-		window.draw(*imageSource);
-		window.display();
-	};
-}
-
 void imageHandler::displayImage(sf::Sprite* imgSource) {
   float scaleFactor = min((float)winSize->width / imgSource->getTexture()->getSize().x, (float)winSize->height / imgSource->getTexture()->getSize().y);
   imgSource->setScale(scaleFactor, scaleFactor);
@@ -69,7 +49,12 @@ void imageHandler::displayImage(sf::Sprite* imgSource) {
 	sf::View view;
 	view.setSize(winSize->width, winSize->height);
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
-	handleDisplayEvents(*window, &view, imgSource, nullptr, 0);
+
+  std::unique_ptr<image_frame> base_image_frame(new image_frame());
+  base_image_frame.get()->baseImage = *imgSource;
+  base_image_frame.get()->baseTexture = *(imgSource->getTexture());
+  image_frames.emplace_back(std::move(base_image_frame));
+  handleDisplayEvents2(nullptr);
 };
 
 void imageHandler::openSingleImage(string imgPath) {
@@ -131,11 +116,13 @@ void imageHandler::handleDisplayEvents2(void (imageHandler::*event_functions)(in
 			if (event.type == sf::Event::Closed) {
 				window->close();
 				break;
-			}
+			};
 			if (event.type == sf::Event::Resized) {
 				setLetterboxView(view, event.size.width, event.size.height);
 			};
-      (this->*event_functions)(imageIndex, event);
+      if (event_functions != nullptr) {
+        (this->*event_functions)(imageIndex, event);
+      };
 		};
 		window->clear();
     window->setView(*view);

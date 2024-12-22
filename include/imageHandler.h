@@ -34,7 +34,6 @@ public:
 	void openMultipleImages();
   void initArgCounter(argCounter& argCt_ptr);
   void initWindowFrame(sf::RenderWindow& win, sf::View& v, windowSize& w);
-	static void handleDisplayEvents(sf::RenderWindow& window, sf::View *view, sf::Sprite* imageSource, char** imgPaths, short arg_c, bool isMultipleImages = false);
 	void handleDisplayEvents2(void (imageHandler::*event_functions)(int &img_index, sf::Event &ev));
 };
 
