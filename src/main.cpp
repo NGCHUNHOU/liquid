@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
 		return 1;
 	};
 
-	char* flags = "h:a:";
+	char flags[64] = "h:a:";
 	option opts[] = {
 		{"help", optional_argument,  (int*)&flags[0], 1},
 		{"all", optional_argument,  (int*)&flags[0], 2}

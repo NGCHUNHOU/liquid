@@ -46,9 +46,6 @@ void imageHandler::displayImage(sf::Sprite* imgSource) {
   imgSource->setScale(scaleFactor, scaleFactor);
 	imgSource->setOrigin(imgSource->getTexture()->getSize().x / 2.0f, imgSource->getTexture()->getSize().y / 2.0f);
 	imgSource->setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
-	sf::View view;
-	view.setSize(winSize->width, winSize->height);
-	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
   std::unique_ptr<image_frame> base_image_frame(new image_frame());
   base_image_frame.get()->baseImage = *imgSource;
