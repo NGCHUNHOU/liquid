@@ -99,9 +99,31 @@ void imageHandler::printImagesList(char** imgPaths, short arg_c) {
     printf("opening image from %s\n", imgPaths[image_index]);
     image_index -= 1;
   };
+};
+
+void imageHandler::xmove_images(int &img_index, sf::Event &ev) {
+  if (ev.type == sf::Event::KeyPressed) {
+    if (ev.key.code == sf::Keyboard::L) {
+      img_index = (img_index + 1) % image_frames.size();
+
+      float scaleFactor = min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+      image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
+      image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
+      image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
+    };
+    if (ev.key.code == sf::Keyboard::H) {
+      img_index = (img_index - 1) % image_frames.size();
+
+      float scaleFactor = min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+      image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
+      image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
+      image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
+
+    };
+  };
 }
 
-void imageHandler::handleDisplayEvents2() {
+void imageHandler::handleDisplayEvents2(void (imageHandler::*event_functions)(int &img_index, sf::Event &ev)) {
 	int imageIndex = 0;
 	while (window->isOpen()) {
 		sf::Event event;
@@ -113,27 +135,7 @@ void imageHandler::handleDisplayEvents2() {
 			if (event.type == sf::Event::Resized) {
 				setLetterboxView(view, event.size.width, event.size.height);
 			};
-
-      if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::L) {
-          imageIndex = (imageIndex + 1) % image_frames.size();
-
-          float scaleFactor = min((float)winSize->width / image_frames[imageIndex]->baseTexture.getSize().x, (float)winSize->height / image_frames[imageIndex]->baseTexture.getSize().y);
-          image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
-          image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
-          image_frames[imageIndex]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
-        };
-        if (event.key.code == sf::Keyboard::H) {
-          imageIndex = (imageIndex - 1) % image_frames.size();
-
-          float scaleFactor = min((float)winSize->width / image_frames[imageIndex]->baseTexture.getSize().x, (float)winSize->height / image_frames[imageIndex]->baseTexture.getSize().y);
-          image_frames[imageIndex]->baseImage.setScale(scaleFactor, scaleFactor);
-          image_frames[imageIndex]->baseImage.setOrigin(image_frames[imageIndex]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[imageIndex]->baseImage.getTexture()->getSize().y / 2.0f);
-          image_frames[imageIndex]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
-
-        };
-      };
-
+      (this->*event_functions)(imageIndex, event);
 		};
 		window->clear();
     window->setView(*view);
@@ -156,5 +158,5 @@ void imageHandler::openMultipleImages() {
 
     image_frames.emplace_back(std::move(base_image_frame));
   };
-	handleDisplayEvents2();
+	handleDisplayEvents2(&imageHandler::xmove_images);
 };

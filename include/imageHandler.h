@@ -28,13 +28,14 @@ public:
   static void printImagesList(char** imgPaths, short arg_c);
 	static void setLetterboxView(sf::View* view, int windowWidth, int windowHeight);
 	void displayImage(sf::Sprite* imgSource);
+  void xmove_images(int &img_index, sf::Event &ev);
 	void openSingleImage(string imgPath);
 	static void updateTextureSize(sf::Sprite* baseImg, sf::Texture* textre, sf::Sprite* updateImg);
 	void openMultipleImages();
   void initArgCounter(argCounter& argCt_ptr);
   void initWindowFrame(sf::RenderWindow& win, sf::View& v, windowSize& w);
 	static void handleDisplayEvents(sf::RenderWindow& window, sf::View *view, sf::Sprite* imageSource, char** imgPaths, short arg_c, bool isMultipleImages = false);
-	void handleDisplayEvents2();
+	void handleDisplayEvents2(void (imageHandler::*event_functions)(int &img_index, sf::Event &ev));
 };
 
 #endif
