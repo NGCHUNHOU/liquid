@@ -100,37 +100,48 @@ void imageHandler::zoom_in_out(sf::Event &ev) {
 };
 
 void imageHandler::xmove_images(int &img_index, sf::Event &ev) {
-  if (ev.type == sf::Event::KeyPressed) {
-    if (ev.key.code == sf::Keyboard::L) {
-      img_index = (img_index + 1) % image_frames.size();
+  switch (ev.type) {
+    case sf::Event::KeyPressed:
+      if (ev.key.code == sf::Keyboard::L) {
+        img_index = (img_index + 1) % image_frames.size();
 
-      float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
-      image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
-      image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
-      image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
-    };
-    if (ev.key.code == sf::Keyboard::H) {
-      img_index = (img_index - 1) % image_frames.size();
+        float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+        image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
+        image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
+        image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
+      };
+      if (ev.key.code == sf::Keyboard::H) {
+        img_index = (img_index - 1) % image_frames.size();
 
-      float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
-      image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
-      image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
-      image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
+        float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+        image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
+        image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
+        image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
-    };
-  };
+      };
+      break;
 
-  /*
-   * ev.mouseWheelScroll.delta -> float : float value to determine wheel movement direction
-   * ev.mouseWheelScroll.x -> int : mouse x pos
-   * ev.mouseWheelScroll.y -> int : mouse y pos
-   */
-  if (ev.type == sf::Event::MouseWheelScrolled) {
+    /*
+     * ev.mouseWheelScroll.delta -> float : float value to determine wheel movement direction
+     * ev.mouseWheelScroll.x -> int : mouse x pos
+     * ev.mouseWheelScroll.y -> int : mouse y pos
+     */
+    case sf::Event::MouseWheelScrolled:
       if (getWheelType(ev) == VERTICAL_WHEEL) {
         zoom_in_out(ev);
       };
+      break;
+
+    /* todo: make mouse pan
+    case sf::Event::MouseMoved:
+      view->setCenter(ev.mouseMove.x, ev.mouseMove.y);
+      break;
+    */
+
+    default:
+      break;
   };
-}
+};
 
 void imageHandler::handleDisplayEvents2(void (imageHandler::*event_functions)(int &img_index, sf::Event &ev)) {
 	int imageIndex = 0;
