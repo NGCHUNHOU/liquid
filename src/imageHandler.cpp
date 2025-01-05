@@ -5,6 +5,14 @@
 
 windowSize imageHandler::global_winSize = { 800, 600 };
 
+int getWheelType(sf::Event &ev) {
+    if (ev.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+      return VERTICAL_WHEEL;
+    else if (ev.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel)
+      return HORIZONTAL_WHEEL;
+    return UNKNOWN_WHEEL;
+};
+
 void imageHandler::initArgCounter(argCounter& argCt_ptr) {
   argCt = &argCt_ptr;
 };
@@ -42,7 +50,7 @@ void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowH
 }
 
 void imageHandler::displayImage(sf::Sprite* imgSource) {
-  float scaleFactor = min((float)winSize->width / imgSource->getTexture()->getSize().x, (float)winSize->height / imgSource->getTexture()->getSize().y);
+  float scaleFactor = std::min((float)winSize->width / imgSource->getTexture()->getSize().x, (float)winSize->height / imgSource->getTexture()->getSize().y);
   imgSource->setScale(scaleFactor, scaleFactor);
 	imgSource->setOrigin(imgSource->getTexture()->getSize().x / 2.0f, imgSource->getTexture()->getSize().y / 2.0f);
 	imgSource->setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
@@ -54,10 +62,10 @@ void imageHandler::displayImage(sf::Sprite* imgSource) {
   handleDisplayEvents2(nullptr);
 };
 
-void imageHandler::openSingleImage(string imgPath) {
-	ifstream file(imgPath);
+void imageHandler::openSingleImage(std::string imgPath) {
+  std::ifstream file(imgPath);
 	if (!file.good()) {
-		cout << "failed to open the image" << endl;
+    std::cout << "failed to open the image" << std::endl;
 		exit(1);
 	}
 
@@ -83,12 +91,20 @@ void imageHandler::printImagesList(char** imgPaths, short arg_c) {
   };
 };
 
+void imageHandler::zoom_in_out(sf::Event &ev) {
+  if (ev.mouseWheelScroll.delta == WHEEL_FORWARD) {
+    view->zoom((1.0f - ZOOM_RATE));
+  } else {
+    view->zoom((1.0f + ZOOM_RATE));
+  }
+};
+
 void imageHandler::xmove_images(int &img_index, sf::Event &ev) {
   if (ev.type == sf::Event::KeyPressed) {
     if (ev.key.code == sf::Keyboard::L) {
       img_index = (img_index + 1) % image_frames.size();
 
-      float scaleFactor = min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+      float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
       image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
       image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
       image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
@@ -96,12 +112,23 @@ void imageHandler::xmove_images(int &img_index, sf::Event &ev) {
     if (ev.key.code == sf::Keyboard::H) {
       img_index = (img_index - 1) % image_frames.size();
 
-      float scaleFactor = min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+      float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
       image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
       image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
       image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
     };
+  };
+
+  /*
+   * ev.mouseWheelScroll.delta -> float : float value to determine wheel movement direction
+   * ev.mouseWheelScroll.x -> int : mouse x pos
+   * ev.mouseWheelScroll.y -> int : mouse y pos
+   */
+  if (ev.type == sf::Event::MouseWheelScrolled) {
+      if (getWheelType(ev) == VERTICAL_WHEEL) {
+        zoom_in_out(ev);
+      };
   };
 }
 
@@ -135,7 +162,7 @@ void imageHandler::openMultipleImages() {
     base_image_frame = std::unique_ptr<image_frame>(new image_frame());
     base_image_frame.get()->baseTexture.loadFromFile(argCt->arguments_vector[i]);
     base_image_frame.get()->baseImage.setTexture(base_image_frame.get()->baseTexture);
-    float scaleFactor = min((float)winSize->width / base_image_frame.get()->baseTexture.getSize().x, (float)winSize->height / base_image_frame.get()->baseTexture.getSize().y);
+    float scaleFactor = std::min((float)winSize->width / base_image_frame.get()->baseTexture.getSize().x, (float)winSize->height / base_image_frame.get()->baseTexture.getSize().y);
     base_image_frame.get()->baseImage.setScale(scaleFactor, scaleFactor);
     base_image_frame.get()->baseImage.setOrigin(base_image_frame.get()->baseImage.getTexture()->getSize().x / 2.0f, base_image_frame.get()->baseImage.getTexture()->getSize().y / 2.0f);
     base_image_frame.get()->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);

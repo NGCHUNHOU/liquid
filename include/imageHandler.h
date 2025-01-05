@@ -6,7 +6,15 @@
 #include <getopt.h>
 #include <string>
 #include <memory>
-using namespace std;
+
+#define VERTICAL_WHEEL 0
+#define HORIZONTAL_WHEEL 1
+#define UNKNOWN_WHEEL 2
+
+#define WHEEL_FORWARD 1
+#define WHEEL_BACKWARD -1
+
+#define ZOOM_RATE 0.1f
 
 struct windowSize { int width; int height; };
 
@@ -14,6 +22,8 @@ struct image_frame {
   sf::Texture baseTexture;
 	sf::Sprite baseImage;
 };
+
+int getWheelType(sf::Event &ev);
 
 class imageHandler
 {
@@ -29,12 +39,13 @@ public:
 	static void setLetterboxView(sf::View* view, int windowWidth, int windowHeight);
 	void displayImage(sf::Sprite* imgSource);
   void xmove_images(int &img_index, sf::Event &ev);
-	void openSingleImage(string imgPath);
+	void openSingleImage(std::string imgPath);
 	static void updateTextureSize(sf::Sprite* baseImg, sf::Texture* textre, sf::Sprite* updateImg);
 	void openMultipleImages();
   void initArgCounter(argCounter& argCt_ptr);
   void initWindowFrame(sf::RenderWindow& win, sf::View& v, windowSize& w);
 	void handleDisplayEvents2(void (imageHandler::*event_functions)(int &img_index, sf::Event &ev));
+  void zoom_in_out(sf::Event &ev);
 };
 
 #endif
