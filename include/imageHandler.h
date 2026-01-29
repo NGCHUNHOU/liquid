@@ -28,7 +28,6 @@ int getWheelType(sf::Event &ev);
 class imageHandler
 {
 private:
-  argCounter *argCt;
   sf::RenderWindow *window;
   windowSize *winSize;
   std::vector<std::unique_ptr<image_frame>> image_frames;
@@ -41,8 +40,7 @@ public:
   void xmove_images(int &img_index, sf::Event &ev);
 	void openSingleImage(std::string imgPath);
 	static void updateTextureSize(sf::Sprite* baseImg, sf::Texture* textre, sf::Sprite* updateImg);
-	void openMultipleImages();
-  void initArgCounter(argCounter& argCt_ptr);
+	void openMultipleImages(char **arguments_vector_pointer, int arguments_count);
   void initWindowFrame(sf::RenderWindow& win, sf::View& v, windowSize& w);
 	void handleDisplayEvents2(void (imageHandler::*event_functions)(int &img_index, sf::Event &ev));
   void zoom_in_out(sf::Event &ev);

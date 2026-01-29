@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0...4.0)
 project(liquid)
 # include_directories(${PROJECT_SOURCE_DIR}/installed/x64-windows/include)
 # include_directories(${PROJECT_SOURCE_DIR}/include)

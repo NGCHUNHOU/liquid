@@ -2,7 +2,7 @@
 #include <array>
 #include <getopt.h>
 #include <imageHandler.h>
-using namespace std;
+#include <memory>
 
 void usage() {
 	const char *programName = "liquid";
@@ -14,7 +14,7 @@ void usage() {
 	return;
 }
 
-void try_openimg(argCounter& argCt) {
+void try_openimg(char **arguments_vector_pointer, int arguments_count, int fileCount, int flagCount) {
   windowSize winSize = {static_cast<int>(sf::VideoMode::getDesktopMode().width * 0.8f), static_cast<int>(sf::VideoMode::getDesktopMode().height * 0.8f)};
 	sf::RenderWindow window(sf::VideoMode(winSize.width, winSize.height), "Liquid");
   sf::View view;
@@ -22,20 +22,18 @@ void try_openimg(argCounter& argCt) {
 	view.setCenter(view.getSize().x / 2, view.getSize().y / 2);
 
   imageHandler imgHandler;
-  imgHandler.initArgCounter(argCt);
   imgHandler.initWindowFrame(window, view, winSize);
 
-	if (argCt.arguments_count == 2 && argCt.flagCount == 0) {
-		cout << "opening single file" << endl;
-		imgHandler.openSingleImage(argCt.arguments_vector[1]);
+	if (arguments_count == 2 && flagCount == 0) {
+		std::cout << "opening single file\n";
+		imgHandler.openSingleImage(arguments_vector_pointer[1]);
 		exit(0);
-	} else if (argCt.arguments_count > 2 && argCt.fileCount == (argCt.arguments_count - 1)) {
-		cout << "all arguments type are file" << endl;
-		imgHandler.openMultipleImages();
+	} else if (arguments_count > 2 && fileCount == (arguments_count - 1)) {
+		std::cout << "all arguments type are file\n";
+		imgHandler.openMultipleImages(arguments_vector_pointer, arguments_count);
 		exit(0);
-	} else if (argCt.arguments_count > 2 && argCt.flagCount > 0) {
-		cout << "the arguments have option flag and value" << endl;
-		// opemMultipleImgWithFlag() here
+	} else if (arguments_count > 2 && flagCount > 0) {
+		std::cout << "the arguments have option flag and value\n";
 	} else {
 		return;
 	}
@@ -43,7 +41,7 @@ void try_openimg(argCounter& argCt) {
 
 int main(int argc, char** argv) {
 	if (argc < 2) {
-		cout << "no argument found" << endl;
+		std::cout << "no argument found\n";
 		return 1;
 	};
 
@@ -54,20 +52,21 @@ int main(int argc, char** argv) {
 	};
 
 	argCounter arg_counter = {0, 0, argc, argv};
-	char opt = NULL;
-	while ((opt = argParser::getopt_long(arg_counter.arguments_count, arg_counter.arguments_vector, flags, &arg_counter)) != -1 && (arg_counter.fileCount + arg_counter.flagCount) < arg_counter.arguments_count) {
+	argParser arg_parser(argc, argv);
+	char opt = '\0';
+	while ((opt = arg_parser.getopt_long(flags)) != '\0') {
 		switch (opt) {
 		case 'h':
 			usage();
 			break;
 		case 'a':
-			cout << "show all page" << endl;
+			std::cout << "show all page\n";
 			break;
 		case '%':
-			try_openimg(arg_counter);
+			try_openimg(arg_parser.get_arguments_vector_pointer(), arg_parser.arguments_count, arg_parser.fileCount, arg_parser.flagCount);
 			break;
 		default:
-			cout << "unknown option" << endl;
+			std::cout << "unknown option\n";
 			break;
 		};
 	};

@@ -6,66 +6,61 @@
 windowSize imageHandler::global_winSize = { 800, 600 };
 
 int getWheelType(sf::Event &ev) {
-    if (ev.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
-      return VERTICAL_WHEEL;
-    else if (ev.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel)
-      return HORIZONTAL_WHEEL;
-    return UNKNOWN_WHEEL;
-};
-
-void imageHandler::initArgCounter(argCounter& argCt_ptr) {
-  argCt = &argCt_ptr;
+	if (ev.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+		return VERTICAL_WHEEL;
+	else if (ev.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel)
+		return HORIZONTAL_WHEEL;
+	return UNKNOWN_WHEEL;
 };
 
 void imageHandler::initWindowFrame(sf::RenderWindow& win, sf::View& v, windowSize& w) {
-  window = &win;
-  view = &v;
-  winSize = &w;
+	window = &win;
+	view = &v;
+	winSize = &w;
 }
 
 void imageHandler::setLetterboxView(sf::View *view, int windowWidth, int windowHeight) {
-		float windowRatio = windowWidth / (float) windowHeight;
-		float viewRatio = view->getSize().x / (float) view->getSize().y;
-		float sizeX = 1;
-		float sizeY = 1;
-		float posX = 0;
-		float posY = 0;
+	float windowRatio = windowWidth / (float) windowHeight;
+	float viewRatio = view->getSize().x / (float) view->getSize().y;
+	float sizeX = 1;
+	float sizeY = 1;
+	float posX = 0;
+	float posY = 0;
 
-		bool horizontalSpacing = true;
-		if (windowRatio < viewRatio)
-			horizontalSpacing = false;
+	bool horizontalSpacing = true;
+	if (windowRatio < viewRatio)
+		horizontalSpacing = false;
 
-		if (horizontalSpacing) {
-			sizeX = viewRatio / windowRatio;
-			posX = (1 - sizeX) / 2.f;
-		}
+	if (horizontalSpacing) {
+		sizeX = viewRatio / windowRatio;
+		posX = (1 - sizeX) / 2.f;
+	}
 
-		else {
-			sizeY = windowRatio / viewRatio;
-			posY = (1 - sizeY) / 2.f;
-		}
+	else {
+		sizeY = windowRatio / viewRatio;
+		posY = (1 - sizeY) / 2.f;
+	}
 
-		view->setViewport( sf::FloatRect(posX, posY, sizeX, sizeY) );
-		return;
+	view->setViewport( sf::FloatRect(posX, posY, sizeX, sizeY) );
 }
 
 void imageHandler::displayImage(sf::Sprite* imgSource) {
-  float scaleFactor = std::min((float)winSize->width / imgSource->getTexture()->getSize().x, (float)winSize->height / imgSource->getTexture()->getSize().y);
-  imgSource->setScale(scaleFactor, scaleFactor);
+	float scaleFactor = std::min((float)winSize->width / imgSource->getTexture()->getSize().x, (float)winSize->height / imgSource->getTexture()->getSize().y);
+	imgSource->setScale(scaleFactor, scaleFactor);
 	imgSource->setOrigin(imgSource->getTexture()->getSize().x / 2.0f, imgSource->getTexture()->getSize().y / 2.0f);
 	imgSource->setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
-  std::unique_ptr<image_frame> base_image_frame(new image_frame());
-  base_image_frame.get()->baseImage = *imgSource;
-  base_image_frame.get()->baseTexture = *(imgSource->getTexture());
-  image_frames.emplace_back(std::move(base_image_frame));
-  handleDisplayEvents2(nullptr);
+	std::unique_ptr<image_frame> base_image_frame(new image_frame());
+	base_image_frame.get()->baseImage = *imgSource;
+	base_image_frame.get()->baseTexture = *(imgSource->getTexture());
+	image_frames.emplace_back(std::move(base_image_frame));
+	handleDisplayEvents2(nullptr);
 };
 
 void imageHandler::openSingleImage(std::string imgPath) {
-  std::ifstream file(imgPath);
+	std::ifstream file(imgPath);
 	if (!file.good()) {
-    std::cout << "failed to open the image" << std::endl;
+		std::cout << "failed to open the image\n";
 		exit(1);
 	}
 
@@ -83,64 +78,65 @@ void imageHandler::updateTextureSize(sf::Sprite *baseImg, sf::Texture *textre, s
 	baseImg->setOrigin(updateImg->getOrigin());
 	baseImg->setPosition(updateImg->getPosition());
 };
+
 void imageHandler::printImagesList(char** imgPaths, short arg_c) {
-  short image_index = arg_c - 1;
-  while (image_index != 0) {
-    printf("opening image from %s\n", imgPaths[image_index]);
-    image_index -= 1;
-  };
+	short image_index = arg_c - 1;
+	while (image_index != 0) {
+		printf("opening image from %s\n", imgPaths[image_index]);
+		image_index -= 1;
+	};
 };
 
 void imageHandler::zoom_in_out(sf::Event &ev) {
-  if (ev.mouseWheelScroll.delta == WHEEL_FORWARD) {
-    view->zoom((1.0f - ZOOM_RATE));
-  } else {
-    view->zoom((1.0f + ZOOM_RATE));
-  }
+	if (ev.mouseWheelScroll.delta == WHEEL_FORWARD) {
+		view->zoom((1.0f - ZOOM_RATE));
+	} else {
+		view->zoom((1.0f + ZOOM_RATE));
+	}
 };
 
 void imageHandler::xmove_images(int &img_index, sf::Event &ev) {
-  switch (ev.type) {
-    case sf::Event::KeyPressed:
-      if (ev.key.code == sf::Keyboard::L) {
-        img_index = (img_index + 1) % image_frames.size();
+	switch (ev.type) {
+		case sf::Event::KeyPressed:
+			if (ev.key.code == sf::Keyboard::L) {
+				img_index = (img_index + 1) % image_frames.size();
 
-        float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
-        image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
-        image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
-        image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
-      };
-      if (ev.key.code == sf::Keyboard::H) {
-        img_index = (img_index - 1) % image_frames.size();
+				float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+				image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
+				image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
+				image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
+			};
+			if (ev.key.code == sf::Keyboard::H) {
+				img_index = (img_index - 1) % image_frames.size();
 
-        float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
-        image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
-        image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
-        image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
+				float scaleFactor = std::min((float)winSize->width / image_frames[img_index]->baseTexture.getSize().x, (float)winSize->height / image_frames[img_index]->baseTexture.getSize().y);
+				image_frames[img_index]->baseImage.setScale(scaleFactor, scaleFactor);
+				image_frames[img_index]->baseImage.setOrigin(image_frames[img_index]->baseImage.getTexture()->getSize().x / 2.0f, image_frames[img_index]->baseImage.getTexture()->getSize().y / 2.0f);
+				image_frames[img_index]->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
-      };
-      break;
+			};
+			break;
 
-    /*
-     * ev.mouseWheelScroll.delta -> float : float value to determine wheel movement direction
-     * ev.mouseWheelScroll.x -> int : mouse x pos
-     * ev.mouseWheelScroll.y -> int : mouse y pos
-     */
-    case sf::Event::MouseWheelScrolled:
-      if (getWheelType(ev) == VERTICAL_WHEEL) {
-        zoom_in_out(ev);
-      };
-      break;
+			/*
+			 * ev.mouseWheelScroll.delta -> float : float value to determine wheel movement direction
+			 * ev.mouseWheelScroll.x -> int : mouse x pos
+			 * ev.mouseWheelScroll.y -> int : mouse y pos
+			 */
+		case sf::Event::MouseWheelScrolled:
+			if (getWheelType(ev) == VERTICAL_WHEEL) {
+				zoom_in_out(ev);
+			};
+			break;
 
-    /* todo: make mouse pan
-    case sf::Event::MouseMoved:
-      view->setCenter(ev.mouseMove.x, ev.mouseMove.y);
-      break;
-    */
+			/* todo: make mouse pan
+			   case sf::Event::MouseMoved:
+			   view->setCenter(ev.mouseMove.x, ev.mouseMove.y);
+			   break;
+			   */
 
-    default:
-      break;
-  };
+		default:
+			break;
+	};
 };
 
 void imageHandler::handleDisplayEvents2(void (imageHandler::*event_functions)(int &img_index, sf::Event &ev)) {
@@ -155,30 +151,30 @@ void imageHandler::handleDisplayEvents2(void (imageHandler::*event_functions)(in
 			if (event.type == sf::Event::Resized) {
 				setLetterboxView(view, event.size.width, event.size.height);
 			};
-      if (event_functions != nullptr) {
-        (this->*event_functions)(imageIndex, event);
-      };
+			if (event_functions != nullptr) {
+				(this->*event_functions)(imageIndex, event);
+			};
 		};
 		window->clear();
-    window->setView(*view);
+		window->setView(*view);
 		window->draw(image_frames[imageIndex]->baseImage);
 		window->display();
 	};
 }
 
-void imageHandler::openMultipleImages() {
-  std::unique_ptr<image_frame> base_image_frame;
-  for (int i = 1 ; i < argCt->arguments_count ; ++i) {
-    printf("opening image from %s\n", argCt->arguments_vector[i]);
-    base_image_frame = std::unique_ptr<image_frame>(new image_frame());
-    base_image_frame.get()->baseTexture.loadFromFile(argCt->arguments_vector[i]);
-    base_image_frame.get()->baseImage.setTexture(base_image_frame.get()->baseTexture);
-    float scaleFactor = std::min((float)winSize->width / base_image_frame.get()->baseTexture.getSize().x, (float)winSize->height / base_image_frame.get()->baseTexture.getSize().y);
-    base_image_frame.get()->baseImage.setScale(scaleFactor, scaleFactor);
-    base_image_frame.get()->baseImage.setOrigin(base_image_frame.get()->baseImage.getTexture()->getSize().x / 2.0f, base_image_frame.get()->baseImage.getTexture()->getSize().y / 2.0f);
-    base_image_frame.get()->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
+void imageHandler::openMultipleImages(char **arguments_vector_pointer, int arguments_count) {
+	std::unique_ptr<image_frame> base_image_frame;
+	for (int i = 1 ; i < arguments_count ; ++i) {
+		printf("opening image from %s\n", arguments_vector_pointer[i]);
+		base_image_frame = std::unique_ptr<image_frame>(new image_frame());
+		base_image_frame.get()->baseTexture.loadFromFile(arguments_vector_pointer[i]);
+		base_image_frame.get()->baseImage.setTexture(base_image_frame.get()->baseTexture);
+		float scaleFactor = std::min((float)winSize->width / base_image_frame.get()->baseTexture.getSize().x, (float)winSize->height / base_image_frame.get()->baseTexture.getSize().y);
+		base_image_frame.get()->baseImage.setScale(scaleFactor, scaleFactor);
+		base_image_frame.get()->baseImage.setOrigin(base_image_frame.get()->baseImage.getTexture()->getSize().x / 2.0f, base_image_frame.get()->baseImage.getTexture()->getSize().y / 2.0f);
+		base_image_frame.get()->baseImage.setPosition(winSize->width / 2.0f, winSize->height / 2.0f);
 
-    image_frames.emplace_back(std::move(base_image_frame));
-  };
+		image_frames.emplace_back(std::move(base_image_frame));
+	};
 	handleDisplayEvents2(&imageHandler::xmove_images);
 };

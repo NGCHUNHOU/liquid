@@ -1,8 +1,6 @@
 #include <getopt.h>
+#include <iostream>
 #include <windows.h>
-
-char* optarg = NULL;
-int optind = 1;
 
 int argParser::getArgType(int num) {
 	// 001 filearg, 010 unknown flag, 011 onlyFlag
@@ -19,43 +17,35 @@ int argParser::getArgType(int num) {
 	};
 };
 
-int argParser::getopt_long(int argc, char* argv[], const char* short_opt, argCounter *aC)
-{
-	if ((optind >= argc) || (argv[optind][0] == 0))
-		return -1;
+int argParser::getopt_long(const char *short_opt) {
+  // base case to stop looping the option values
+	if (option_index > (arguments_count - 1)) {
+		return '\0';
+  }
 
-	int firstChar = 0;
+  const int cli_parameters_count = arguments_count - 1;
+	char firstChar = '\0';
 
-	if (argv[optind][0] != '-') {
-		aC->fileCount += 1;
+	if (arguments_vector_pointer[option_index][0] != '-') {
+		fileCount += 1;
 		return '%';
-	} else if (argv[optind][1] == '-') {
-		firstChar = argv[optind][2];
-		aC->flagCount += 1;
+	} else if (arguments_vector_pointer[option_index][1] == '-') {
+		firstChar = arguments_vector_pointer[flagCount][2];
+		flagCount += 1;
+	} else {
+		firstChar = arguments_vector_pointer[option_index][1];
+		flagCount += 1;
 	}
-	else {
-		firstChar = argv[optind][1];
-		aC->flagCount += 1;
-	}
 
-	if (aC->fileCount > 0)
-		return firstChar + ((aC->fileCount)+(aC->flagCount));
+  option_index += 1;
 
-	const char* p = strchr(short_opt, firstChar);
+	const char* character_found = std::strchr(short_opt, firstChar);
+  if (character_found != nullptr) {
+    return *character_found;
+  }
 
-	if (p == NULL) {
-		optind++;
-		return '?';
-	};
-
-	if (p[1] == ':')
-	{
-		optarg = argv[optind];
-		optind++;
-	};
-
-	if (((aC->fileCount) + (aC->flagCount)) <= 2) {
-		return firstChar;
-	};
-	return firstChar + ((aC->fileCount)+(aC->flagCount));
+  // unknown case
+	return '?';
 };
+
+char** argParser::get_arguments_vector_pointer() { return arguments_vector_pointer; };
