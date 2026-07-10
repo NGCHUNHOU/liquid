@@ -20,22 +20,39 @@ add_subdirectory(SFML)
 target_link_libraries(liquid sfml-system sfml-network sfml-graphics sfml-window)
 
 function(append_mingw_libcxx_to destdir)
+	if (NOT MINGW)
+    message(":24 non MINGW environment is not supported")
+		return()
+	endif()
+
 	if (MINGW)
-		message("platform detected is MinGW, searching for dll files for binary packaging...")
-		find_library(LIBCXX_DLL c++ PATHS ${CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES})
-		find_library(LIBUNWIND_DLL unwind PATHS ${CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES})
-		if(NOT LIBCXX_DLL OR NOT LIBUNWIND_DLL)
-			message(FATAL_ERROR "libc++.dll.a or libunwind.dll.a not found. dlls copy aborted")
-		endif()
-		get_filename_component(LIBCXX_DLL_PARENT_DIR ${LIBCXX_DLL} DIRECTORY)
-		get_filename_component(LIBCXX_DLL_GRAND_PARENT_DIR ${LIBCXX_DLL_PARENT_DIR} DIRECTORY)
-		set(LIBCXXDLLFILES_DIR ${LIBCXX_DLL_GRAND_PARENT_DIR}/bin)
-		if (NOT EXISTS "${LIBCXXDLLFILES_DIR}/libc++.dll" OR NOT EXISTS "${LIBCXXDLLFILES_DIR}/libunwind.dll")
-			message(FATAL_ERROR "libc++.dll or libunwind.dll not found. dlls copy aborted")
-		endif()
-		set(LIBCXXDLLFILES ${LIBCXXDLLFILES_DIR}/libc++.dll ${LIBCXXDLLFILES_DIR}/libunwind.dll)
-		message("copying ${LIBCXXDLLFILES} from ${LIBCXXDLLFILES_DIR} to ${CMAKE_BINARY_DIR}/bin")
-		file(COPY ${LIBCXXDLLFILES} DESTINATION ${destdir})
+		message("append_mingw_libcxx_to:29 platform detected is MinGW, searching for dll files for binary packaging...")
+
+    get_filename_component(TOOLCHAIN_BIN_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
+    message(STATUS "append_mingw_libcxx_to:CMAKE_CXX_COMPILER:32: active C++ compiler ${CMAKE_CXX_COMPILER}")
+    message(STATUS "append_mingw_libcxx_to:TOOLCHAIN_BIN_DIR:33: expecting runtime DLLs in ${TOOLCHAIN_BIN_DIR}")
+    find_file(LIBCXX_RUNTIME_DLL
+      NAMES libc++.dll
+      PATHS "${TOOLCHAIN_BIN_DIR}"
+      NO_DEFAULT_PATH   # don't let CMake fall back to unrelated system paths
+    )
+    find_file(LIBUNWIND_RUNTIME_DLL
+      NAMES libunwind.dll
+      PATHS "${TOOLCHAIN_BIN_DIR}"
+      NO_DEFAULT_PATH
+    )
+
+    if (NOT LIBCXX_RUNTIME_DLL OR NOT LIBUNWIND_RUNTIME_DLL)
+      message(FATAL_ERROR
+        "append_mingw_libcxx_to:47"
+        "libc++.dll / libunwind.dll not found next to the active compiler "
+        "(${TOOLCHAIN_BIN_DIR}). This target expects an llvm-mingw-style "
+        "toolchain that ships its runtime DLLs alongside clang++.exe. "
+        "dlls copy aborted.")
+    endif()
+
+    message(STATUS "append_mingw_libcxx_to:LIBCXX_RUNTIME_DLL,LIBUNWIND_RUNTIME_DLL,destdir:54 copying ${LIBCXX_RUNTIME_DLL} and ${LIBUNWIND_RUNTIME_DLL} -> ${destdir}")
+    file(COPY ${LIBCXX_RUNTIME_DLL} ${LIBUNWIND_RUNTIME_DLL} DESTINATION ${destdir})
 	endif()
 endfunction()
 
